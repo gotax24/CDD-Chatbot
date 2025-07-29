@@ -1,7 +1,9 @@
-import { createContext, useState, useEffect } from "react";
-import { supabase } from "../supabaseClient.js";
+
+import { useState, useEffect, createContext } from "react";
+import { supabase } from "../supabaseClient";
 
 const AuthContext = createContext();
+
 const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -9,59 +11,43 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSessionData = async () => {
+    const setupUser = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      setSession(session);
 
       if (session) {
-        //Busca el perfil del usuario
-        const { data: userProfile } = await supabase
+        const { data: userProfile, error: errorProfile } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", session.user.id)
           .single();
         setProfile(userProfile);
 
-        //Busca el rol del usuario
-        const { data: userRole } = await supabase
-          .from("users_roles")
-          .select("roles(name)")
-          .eq("user_id", session.user.id)
-          .single();
+        const { data: userRole, error: errorRoles } = await supabase
+        .rpc("get_user_role");
+        setRole(userRole);
 
-        // Si el usuario tiene un rol, lo guardamos. Si no, queda como null.
-        setRole(userRole ? userRole.roles.name : null);
+      } else {
+        setProfile(null);
+        setRole([]);
       }
       setLoading(false);
     };
 
-    fetchSessionData();
+    setupUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
+        // Si el estado de auth cambia, vuelve a configurar todo
         setSession(session);
-        if (session) {
-          const { data: userProfile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
-          setProfile(userProfile);
-
-          // AÑADIDO: También busca el rol al cambiar la sesión
-          const { data: userRole } = await supabase
-            .from("users_roles")
-            .select("roles(name)")
-            .eq("user_id", session.user.id)
-            .single();
-          setRole(userRole ? userRole.roles.name : null);
-        } else {
+        if (!session) {
           setProfile(null);
-          setRole(null);
+          setRole([]);
+        } else {
+          // Vuelve a llamar a la configuración si la sesión cambia
+          setupUser();
         }
-        setLoading(false);
       }
     );
 

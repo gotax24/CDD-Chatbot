@@ -20,9 +20,8 @@ const SignIn = () => {
 
   // Si ya hay una sesión activa, redirigimos al usuario a la página de inicio
   if (session) {
-    return navigate("/app/home");
+    navigate("/app/home");
   }
-
   // Función para manejar el envío del formulario
   const onSubmit = async (formData) => {
     try {
@@ -44,7 +43,7 @@ const SignIn = () => {
 
       // Si el inicio de sesión es exitoso, puedes redirigir al usuario
       if (data.user) {
-        navigate("/home");
+        navigate("/app/home");
       }
     } catch (error) {
       // Manejo de errores en caso de que algo falle

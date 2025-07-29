@@ -1,20 +1,15 @@
-import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth.jsx";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
-import { Link } from "react-router-dom";
 
 const Menu = () => {
-  const { session, profile, role } = useAuth();
+  const { role, profile } = useAuth();
   const navigate = useNavigate();
 
-  console.log("Session in Menu:", profile);
-
-  if (!session) {
-    return navigate("/");
-  }
+  console.log(profile)
+  console.log("role in menu: ", role);
 
   const handleLogout = async () => {
-    // Aquí puedes manejar el cierre de sesión, por ejemplo, con Supabase
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Error al cerrar sesión:", error);
@@ -25,29 +20,31 @@ const Menu = () => {
 
   return (
     <header className="header-menu">
-      <img src="../public/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />
-      <h1 className="title-menu">Bienvenido a CDD Maracaibo</h1>
+      <img src="/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />
+      <h1 className="title-menu">
+        Bienvenido {profile && profile.first_name} al portal de CDD Maracaibo
+      </h1>
       <nav className="nav-menu">
-        <ul>
-          <li>
+        <ul className="ul-menu">
+          <li className="li-menu">
             <Link to="/app/home">Inicio</Link>
           </li>
-          {role === "sender" && (
+          {(role === "sender" || role === "admin") && (
             <>
-              <li>
-                <Link to="/app/send">Enviar informes</Link>
+              <li className="li-menu">
+                <Link to="/app/send">Informes</Link>
               </li>
-              <li>
-                <Link to="/app/marketing">Enviar Marketing</Link>
+              <li className="li-menu">
+                <Link to="/app/marketing">Marketing</Link>
               </li>
             </>
           )}
           {role === "admin" && (
-            <li>
-              <Link to="/app/admin">Panel de Admin</Link>
+            <li className="li-menu">
+              <Link to="/app/admin">Panel de Administrador</Link>
             </li>
           )}
-          <li>
+          <li className="li-menu">
             <button onClick={handleLogout}>Cerrar sesión</button>
           </li>
         </ul>

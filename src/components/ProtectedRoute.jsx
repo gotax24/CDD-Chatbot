@@ -1,14 +1,13 @@
+import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const ProtectedRoute = ({ children }) => {
   const { session } = useAuth();
 
   if (!session) {
-    // Si no hay sesión, lo redirigimos a la página de inicio de sesión
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
-  // Si hay sesión, mostramos el componente que envolvía
   return children;
 };
 

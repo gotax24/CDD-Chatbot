@@ -1,8 +1,11 @@
+//dependecias
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import App from "./App.jsx";
-import SingIn from "./components/SignIn.jsx";
+//Pagina y componentes del proyectos
+import App from "./pages/App.jsx";
+import SingIn from "./pages/SignIn.jsx";
 import Home from "./home.jsx";
+//autenticar y proteccion de rutas
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
