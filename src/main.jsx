@@ -2,7 +2,7 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 //Pagina y componentes del proyectos
-import Home from "./home.jsx";
+import Home from "./Home.jsx";
 import App from "./pages/App.jsx";
 import SingIn from "./pages/SignIn.jsx";
 import PanelAdmin from "./pages/PanelAdmin.jsx";

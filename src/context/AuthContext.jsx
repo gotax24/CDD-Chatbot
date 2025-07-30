@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext } from "react";
 import { supabase } from "../supabaseClient";
 
@@ -22,12 +21,20 @@ const AuthProvider = ({ children }) => {
           .select("*")
           .eq("id", session.user.id)
           .single();
-        setProfile(userProfile);
+        if (errorProfile) {
+          console.error("Error fetching user profile:", errorProfile);
+        } else {
+          setProfile(userProfile);
+        }
 
-        const { data: userRole, error: errorRoles } = await supabase
-        .rpc("get_user_role");
-        setRole(userRole);
-
+        const { data: userRole, error: errorRoles } = await supabase.rpc(
+          "get_user_role"
+        );
+        if (errorRoles) {
+          console.error("Error fetching user role:", errorRoles);
+        } else {
+          setRole(userRole);
+        }
       } else {
         setProfile(null);
         setRole([]);
