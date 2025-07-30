@@ -6,9 +6,6 @@ const Menu = () => {
   const { role, profile } = useAuth();
   const navigate = useNavigate();
 
-  console.log(profile)
-  console.log("role in menu: ", role);
-
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -32,7 +29,7 @@ const Menu = () => {
           {(role === "sender" || role === "admin") && (
             <>
               <li className="li-menu">
-                <Link to="/app/send">Informes</Link>
+                <Link to="/app/sendReport">Informes</Link>
               </li>
               <li className="li-menu">
                 <Link to="/app/marketing">Marketing</Link>
