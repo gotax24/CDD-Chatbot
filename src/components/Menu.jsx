@@ -29,7 +29,7 @@ const Menu = () => {
           {(role === "sender" || role === "admin") && (
             <>
               <li className="li-menu">
-                <Link to="/app/sendReport">Informes</Link>
+                <Link to="/app/report">Informes</Link>
               </li>
               <li className="li-menu">
                 <Link to="/app/marketing">Marketing</Link>

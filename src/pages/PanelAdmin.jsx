@@ -1,8 +1,9 @@
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { CircleUserRound } from "lucide-react";
 
 const PanelAdmin = () => {
-  const { role } = useAuth();
+  const { role, profile } = useAuth();
 
   if (role !== "admin") {
     return <Navigate to="/app/home" replace />;
@@ -11,31 +12,35 @@ const PanelAdmin = () => {
   return (
     <>
       <header>
-        <img src="" alt="" />
-        <h1>Panel de Administrador</h1>
+        <h1>
+          Bienvenido {profile && profile.first_name} al Panel de Administracion
+        </h1>
       </header>
-      <main>
-        <section>
-          <button>Agregar usuario</button>
-          <button>Editar usuario</button>
-          <button>Eliminar usuario</button>
-          <button>Ver usuarios</button>
-        </section>
-        <section>
-          <h2>Ver Memoria/Storage</h2>
-          <button>Cargar informe</button>
-          <button>Ver informes</button>
-        </section>
-        <section>
-          <h2>Ver Logs</h2>
-          <button>Ver logs de actividad</button>
-          <button>Ver logs de errores</button>
-        </section>
-        <section>
-          <h2>Mensajes enviados </h2>
-          <button>Ver mensajes</button>
-        </section>
-      </main>
+      <Link to="admin/users">
+        <div className="card-admin">
+          <CircleUserRound />
+          <h2>Gestion de usuarios</h2>
+        </div>
+      </Link>
+      <div>
+        <h2>Gestion de Informes</h2>
+        <button>Cargar informe</button>
+        <button>Ver informes</button>
+      </div>
+      <div>
+        <h2>Roles</h2>
+        <button>Agregar rol</button>
+        <button>Editar rol</button>
+        <button>Eliminar rol</button>
+        <button>Ver roles</button>
+      </div>
+      <div>
+        <h2>Gestion de pacientes</h2>
+        <button>Agregar paciente</button>
+        <button>Editar paciente</button>
+        <button>Eliminar paciente</button>
+        <button>Ver pacientes</button>
+      </div>
     </>
   );
 };
