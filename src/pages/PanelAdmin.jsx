@@ -16,7 +16,7 @@ const PanelAdmin = () => {
           Bienvenido {profile && profile.first_name} al Panel de Administracion
         </h1>
       </header>
-      <Link to="admin/users">
+      <Link to="/app/admin/users">
         <div className="card-admin">
           <CircleUserRound />
           <h2>Gestion de usuarios</h2>

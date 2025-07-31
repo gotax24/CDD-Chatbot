@@ -1,42 +1,31 @@
+// components/UserManagement.jsx
+
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import Loading from "./Loading";
+import Loading from "../components/Loading";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { role } = useAuth();
 
   useEffect(() => {
-    setLoading(true);
     const getUsers = async () => {
-      const { data, error } = await supabase.from("profiles").select(`
-      id,
-      username,
-      first_name,
-      last_name,
-      users_roles (
-        roles ( name )
-      )
-    `);
+      const { data, error } = await supabase.from("user_details").select("*");
+
       if (error) {
         console.error("Error al obtener usuarios:", error.message);
-        setLoading(false);
-        return [];
       } else {
-        setUsers(data);
+        const formattedUsers = data.map((user) => ({
+          ...user,
+          role: user.role || "Sin rol asignado",
+        }));
+        setUsers(formattedUsers);
       }
 
-      // Los datos vienen anidados, así que los aplanamos para que sea más fácil usarlos.
-      const formattedUsers = data.map((user) => ({
-        ...user,
-        role: user.users_roles[0]?.roles?.name || "Sin rol asignado", // Extrae el nombre del rol
-      }));
-
       setLoading(false);
-      return formattedUsers;
     };
 
     getUsers();
@@ -51,7 +40,7 @@ const UserManagement = () => {
   return (
     <>
       <header>
-        <h1>Gestion de usuarios</h1>
+        <h1>Gestión de usuarios</h1>
         <button>Agregar Usuario</button>
       </header>
       <main>
@@ -59,7 +48,7 @@ const UserManagement = () => {
           <thead>
             <tr>
               <th>Username</th>
-              <th>Nombre</th>
+              <th>Nombre y Apellido</th>
               <th>Rol</th>
               <th>Acciones</th>
             </tr>
