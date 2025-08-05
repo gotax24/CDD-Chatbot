@@ -8,7 +8,7 @@ import SingIn from "./pages/SignIn.jsx";
 import PanelAdmin from "./pages/PanelAdmin.jsx";
 import Report from "./pages/Report.jsx";
 import Marketing from "./pages/Marketing.jsx";
-import UserManagement from "./components/UserManagement.jsx";
+import UserManagement from "./pages/UserManagement.jsx";
 //autenticar y proteccion de rutas
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";

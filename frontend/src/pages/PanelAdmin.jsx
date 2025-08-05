@@ -3,9 +3,9 @@ import useAuth from "../hooks/useAuth";
 import { CircleUserRound } from "lucide-react";
 
 const PanelAdmin = () => {
-  const { role, profile } = useAuth();
+  const { user } = useAuth();
 
-  if (role !== "admin") {
+  if (user.profile.role !== "admin") {
     return <Navigate to="/app/home" replace />;
   }
 
@@ -13,7 +13,7 @@ const PanelAdmin = () => {
     <>
       <header>
         <h1>
-          Bienvenido {profile && profile.first_name} al Panel de Administracion
+          Bienvenido {user.profile && user.profile.first_name} al Panel de Administracion
         </h1>
       </header>
       <Link to="/app/admin/users">
@@ -24,22 +24,10 @@ const PanelAdmin = () => {
       </Link>
       <div>
         <h2>Gestion de Informes</h2>
-        <button>Cargar informe</button>
-        <button>Ver informes</button>
-      </div>
-      <div>
-        <h2>Roles</h2>
-        <button>Agregar rol</button>
-        <button>Editar rol</button>
-        <button>Eliminar rol</button>
-        <button>Ver roles</button>
+        
       </div>
       <div>
         <h2>Gestion de pacientes</h2>
-        <button>Agregar paciente</button>
-        <button>Editar paciente</button>
-        <button>Eliminar paciente</button>
-        <button>Ver pacientes</button>
       </div>
     </>
   );

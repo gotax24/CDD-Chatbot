@@ -16,10 +16,10 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   // Obtenemos la sesión actual del contexto de autenticación
-  const { session } = useAuth();
+  const { user } = useAuth();
 
   // Si ya hay una sesión activa, redirigimos al usuario a la página de inicio
-  if (session) {
+  if (user.session) {
     navigate("/app/home");
   }
   // Función para manejar el envío del formulario
@@ -33,7 +33,7 @@ const SignIn = () => {
 
       if (error) {
         console.error("Error de autenticación:", error);
-        setError("root", {
+        setError("auth", {
           type: "manual",
           message: "Error de autenticación. Por favor, inténtalo de nuevo.",
         });
@@ -42,9 +42,10 @@ const SignIn = () => {
       }
 
       // Si el inicio de sesión es exitoso, puedes redirigir al usuario
-      if (data.user) {
+      if (data) {
         navigate("/app/home");
       }
+
     } catch (error) {
       // Manejo de errores en caso de que algo falle
       console.error("Error al iniciar sesión:", error);
@@ -116,8 +117,12 @@ const SignIn = () => {
           >
             {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
+
           {errors.root && (
             <span className="error-message">{errors.root.message}</span>
+          )}
+          {errors.auth && (
+            <span className="error-message">{errors.auth.message}</span>
           )}
         </form>
       </main>

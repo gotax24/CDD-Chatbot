@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
 
 const Menu = () => {
-  const { role, profile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -15,18 +15,22 @@ const Menu = () => {
     }
   };
 
+  console.log(user);
+
   return (
     <header className="header-menu">
       <img src="/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />
       <h1 className="title-menu">
-        Bienvenido {profile && profile.first_name} al portal de CDD Maracaibo
+        Bienvenido {user.profile && user.profile.first_name} al portal de CDD
+        Maracaibo
       </h1>
       <nav className="nav-menu">
         <ul className="ul-menu">
           <li className="li-menu">
             <Link to="/app/home">Inicio</Link>
           </li>
-          {(role === "sender" || role === "admin") && (
+          {(user.profile.role === "sender" ||
+            user.profile.role === "admin") && (
             <>
               <li className="li-menu">
                 <Link to="/app/report">Informes</Link>
@@ -36,7 +40,7 @@ const Menu = () => {
               </li>
             </>
           )}
-          {role === "admin" && (
+          {user.profile.role === "admin" && (
             <li className="li-menu">
               <Link to="/app/admin">Panel de Administrador</Link>
             </li>

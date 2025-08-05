@@ -1,5 +1,3 @@
-// components/UserManagement.jsx
-
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -9,29 +7,25 @@ import Loading from "../components/Loading";
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { role } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const getUsers = async () => {
-      const { data, error } = await supabase.from("user_details").select("*");
+      const { data, error } = await supabase.from("profiles").select("*");
 
       if (error) {
         console.error("Error al obtener usuarios:", error.message);
+        setLoading(false);
       } else {
-        const formattedUsers = data.map((user) => ({
-          ...user,
-          role: user.role || "Sin rol asignado",
-        }));
-        setUsers(formattedUsers);
+        setUsers(data);
       }
-
       setLoading(false);
     };
 
     getUsers();
   }, []);
 
-  if (role !== "admin") {
+  if (user.profile.role !== "admin") {
     return <Navigate to="/app/home" replace />;
   }
 

@@ -4,57 +4,52 @@ import { supabase } from "../supabaseClient";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [session, setSession] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [role, setRole] = useState(null);
+  const [user, setUser] = useState({
+    session: null,
+    profile: null,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const setupUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session) {
-        const { data: userProfile, error: errorProfile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-        if (errorProfile) {
-          console.error("Error fetching user profile:", errorProfile);
-        } else {
-          setProfile(userProfile);
-        }
-
-        const { data: userRole, error: errorRoles } = await supabase.rpc(
-          "get_user_role"
-        );
-        if (errorRoles) {
-          console.error("Error fetching user role:", errorRoles);
-        } else {
-          setRole(userRole);
-        }
-      } else {
-        setProfile(null);
-        setRole([]);
+    const setupUser = async (session) => {
+      if (!session?.user) {
+        setUser({
+          session: null,
+          profile: null,
+        });
+        setLoading(false);
+        return;
       }
+
+      // Perfil en tabla
+      const { data: profile, error: errorProfile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+      setUser({
+        session,
+        profile: errorProfile ? null : profile,
+      });
+
       setLoading(false);
     };
 
-    setupUser();
+    // Llamada inicial
+    const init = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      await setupUser(session);
+    };
 
+    init();
+
+    // Suscripción a cambios en auth
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        // Si el estado de auth cambia, vuelve a configurar todo
-        setSession(session);
-        if (!session) {
-          setProfile(null);
-          setRole([]);
-        } else {
-          // Vuelve a llamar a la configuración si la sesión cambia
-          setupUser();
-        }
+        setupUser(session);
       }
     );
 
@@ -63,7 +58,7 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const value = { session, profile, role, loading };
+  const value = { user, loading };
 
   return (
     <AuthContext.Provider value={value}>
