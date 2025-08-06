@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { supabase } from "../supabaseClient";
 
-const ButtonAddUser = ({ closeModal, session }) => {
+const FormAddUser = ({ closeModal, session, isInvitation }) => {
   const {
     register,
     handleSubmit,
@@ -9,82 +10,32 @@ const ButtonAddUser = ({ closeModal, session }) => {
     setError,
   } = useForm();
 
-  const createUser = async (data) => {
-    console.log("🚀 Iniciando creación de usuario");
-    console.log("📋 Datos del formulario:", data);
-    console.log("🎫 Session:", session ? "✅ Presente" : "❌ Falta");
-    console.log(
-      "🔑 Access token:",
-      session?.access_token ? "✅ Presente" : "❌ Falta"
-    );
-
+  const createUser = async (formData) => {
     try {
-      const requestBody = {
-        email: data.email,
-        password: data.firstName + "123",
-        username: data.username,
-        first_name: data.firstName,
-        last_name: data.lastName,
-        role: data.role,
-      };
+      // El nombre de la función que quieres invocar
+      const functionName = isInvitation ? "invite-user" : "create-user";
 
-      console.log("📦 Request body:", requestBody);
-
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
+      // 'invoke' se encarga de todo: URL, headers, auth.
+      const { data, error } = await supabase.functions.invoke(functionName, {
+        body: {
+          email: formData.email,
+          username: formData.username,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          role: formData.role,
         },
-        // Agregar timeout para evitar peticiones colgadas
-        timeout: 10000,
-      };
+      });
 
-      console.log("⚙️ Config headers:", config.headers);
-      console.log(
-        "🌐 Making request to:",
-        "http://127.0.0.1:54321/functions/v1/create-user"
-      );
+      if (error) throw error;
 
-      const response = await axios.post(
-        "http://127.0.0.1:54321/functions/v1/create-user",
-        requestBody,
-        config
-      );
-
-      console.log("✅ Success response:", response.data);
+      console.log("✅ Success response:", data);
+      alert("¡Usuario invitado/creado con éxito!");
       closeModal();
     } catch (error) {
-      console.error("💥 Error completo:", error);
-      console.error("📊 Error response:", error.response);
-      console.error("📨 Error request:", error.request);
-      console.error("⚙️ Error config:", error.config);
-
-      let errorMessage = "Error desconocido";
-
-      if (error.response) {
-        // El servidor respondió con un error
-        console.log(
-          "🔴 Error del servidor:",
-          error.response.status,
-          error.response.data
-        );
-        errorMessage =
-          error.response.data?.error ||
-          error.response.data?.message ||
-          `Error ${error.response.status}`;
-      } else if (error.request) {
-        // La petición se hizo pero no hubo respuesta
-        console.log("🔴 Sin respuesta del servidor:", error.request);
-        errorMessage = "Sin respuesta del servidor - verificar conexión";
-      } else {
-        // Error en la configuración de la petición
-        console.log("🔴 Error de configuración:", error.message);
-        errorMessage = error.message;
-      }
-
+      console.error("Error al invocar la función:", error.message);
       setError("root", {
         type: "manual",
-        message: `Error al crear el usuario: ${errorMessage}`,
+        message: `Error: ${error.message}`,
       });
     }
   };
@@ -238,4 +189,4 @@ const ButtonAddUser = ({ closeModal, session }) => {
   );
 };
 
-export default ButtonAddUser;
+export default FormAddUser;

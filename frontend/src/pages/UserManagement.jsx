@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import Modal from "../components/Modal";
-import ButtonAddUser from "../components/ButtonAddUser";
+import FormAddUser from "../components/FormAddUser";
 import Loading from "../components/Loading";
 
 const UserManagement = () => {
@@ -70,7 +70,11 @@ const UserManagement = () => {
       </main>
 
       <Modal isOpen={isOpen} closeModal={closeModal}>
-        <ButtonAddUser closeModal={closeModal} session={user.session} />
+        <FormAddUser
+          closeModal={closeModal}
+          session={user.session}
+          isInvitation={true}
+        />
       </Modal>
     </>
   );
