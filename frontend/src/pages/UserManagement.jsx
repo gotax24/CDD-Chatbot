@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import Modal from "../components/Modal";
+import ButtonAddUser from "../components/ButtonAddUser";
 import Loading from "../components/Loading";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
+
+  const opneModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -35,7 +41,7 @@ const UserManagement = () => {
     <>
       <header>
         <h1>Gestión de usuarios</h1>
-        <button>Agregar Usuario</button>
+        <button onClick={opneModal}>Agregar Usuario</button>
       </header>
       <main>
         <table>
@@ -62,6 +68,10 @@ const UserManagement = () => {
           </tbody>
         </table>
       </main>
+
+      <Modal isOpen={isOpen} closeModal={closeModal}>
+        <ButtonAddUser closeModal={closeModal} session={user.session} />
+      </Modal>
     </>
   );
 };
