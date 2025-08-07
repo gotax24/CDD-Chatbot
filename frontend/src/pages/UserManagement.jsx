@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import useAuth from "../hooks/useAuth";
+//componentes
 import Modal from "../components/Modal";
 import FormAddUser from "../components/FormAddUser";
 import Loading from "../components/Loading";
@@ -17,7 +18,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const { data, error } = await supabase.from("profiles").select("*");
+      let { data, error } = await supabase.rpc("get_user_profiles");
 
       if (error) {
         console.error("Error al obtener usuarios:", error.message);
@@ -47,6 +48,8 @@ const UserManagement = () => {
         <table>
           <thead>
             <tr>
+              <th>ID</th>
+              <th>Email</th>
               <th>Username</th>
               <th>Nombre y Apellido</th>
               <th>Rol</th>
@@ -56,6 +59,8 @@ const UserManagement = () => {
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.email}</td>
                 <td>{user.username}</td>
                 <td>{`${user.first_name} ${user.last_name}`}</td>
                 <td>{user.role}</td>
@@ -73,7 +78,7 @@ const UserManagement = () => {
         <FormAddUser
           closeModal={closeModal}
           session={user.session}
-          isInvitation={true}
+          isInvitation={false}
         />
       </Modal>
     </>

@@ -15,16 +15,27 @@ const FormAddUser = ({ closeModal, session, isInvitation }) => {
       // El nombre de la función que quieres invocar
       const functionName = isInvitation ? "invite-user" : "create-user";
 
+      const config = {};
+
       // 'invoke' se encarga de todo: URL, headers, auth.
-      const { data, error } = await supabase.functions.invoke(functionName, {
-        body: {
-          email: formData.email,
-          username: formData.username,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          role: formData.role,
+      const { data, error } = await supabase.functions.invoke(
+        functionName,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
         },
-      });
+        {
+          body: {
+            email: formData.email,
+            username: formData.username,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            role: formData.role,
+          },
+        }
+      );
 
       if (error) throw error;
 
