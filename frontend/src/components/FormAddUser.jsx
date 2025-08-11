@@ -1,8 +1,8 @@
-import axios from "axios";
+//import axios from "axios";
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
 
-const FormAddUser = ({ closeModal, session, isInvitation }) => {
+const FormAddUser = ({ closeModal }) => {
   const {
     register,
     handleSubmit,
@@ -11,12 +11,9 @@ const FormAddUser = ({ closeModal, session, isInvitation }) => {
   } = useForm();
 
   const createUser = async (formData) => {
+    console.log(formData);
     try {
-      // El nombre de la función que quieres invocar
-      const functionName = isInvitation ? "invite-user" : "create-user";
-
-      // 'invoke' se encarga de todo: URL, headers, auth.
-      const { data, error } = await supabase.functions.invoke(functionName, {
+      const { data, error } = await supabase.functions.invoke("invite-user", {
         body: {
           email: formData.email,
           username: formData.username,
@@ -26,16 +23,18 @@ const FormAddUser = ({ closeModal, session, isInvitation }) => {
         },
       });
 
+      // 'invoke' devuelve el error de la función en la propiedad 'error'
       if (error) throw error;
 
       console.log("✅ Success response:", data);
-      alert("¡Usuario invitado/creado con éxito!");
       closeModal();
     } catch (error) {
-      console.error("Error al invocar la función:", error.message);
+      const errorMessage = error.context?.body?.error || error.message;
+
+      console.error("Error al invocar la función:", errorMessage);
       setError("root", {
         type: "manual",
-        message: `Error: ${error.message}`,
+        message: `Error: ${errorMessage}`,
       });
     }
   };

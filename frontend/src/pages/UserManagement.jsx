@@ -70,11 +70,7 @@ const UserManagement = () => {
       </main>
 
       <Modal isOpen={isOpen} closeModal={closeModal}>
-        <FormAddUser
-          closeModal={closeModal}
-          session={user.session}
-          isInvitation={true}
-        />
+        <FormAddUser closeModal={closeModal} />
       </Modal>
     </>
   );
