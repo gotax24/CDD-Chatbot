@@ -1,4 +1,3 @@
-//import axios from "axios";
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
 
@@ -11,7 +10,6 @@ const FormAddUser = ({ closeModal }) => {
   } = useForm();
 
   const createUser = async (formData) => {
-    console.log(formData);
     try {
       const { data, error } = await supabase.functions.invoke("invite-user", {
         body: {
@@ -23,7 +21,6 @@ const FormAddUser = ({ closeModal }) => {
         },
       });
 
-      // 'invoke' devuelve el error de la función en la propiedad 'error'
       if (error) throw error;
 
       console.log("✅ Success response:", data);
@@ -41,12 +38,12 @@ const FormAddUser = ({ closeModal }) => {
 
   return (
     <>
-      <header>
-        <span>icono</span>
-        <h1>Agregar usuario</h1>
+      <header className="header-modal">
+        <span className="icon-modal">icono</span>
+        <h1 className="title-modal">Agregar usuario</h1>
       </header>
-      <main>
-        <form onSubmit={handleSubmit(createUser)}>
+      <main className="main-modal">
+        <form className="form-modal" onSubmit={handleSubmit(createUser)}>
           <div className="div-modal">
             <label className="label-modal">
               Nombre:
@@ -177,12 +174,6 @@ const FormAddUser = ({ closeModal }) => {
             <span className="error-modal">{errors.root.message}</span>
           )}
         </form>
-
-        <p className="disclaimer-modal">
-          Cuando se crea un usuario, la contraseña será: (nombre)123
-          <br />
-          El usuario podrá cambiarla después.
-        </p>
       </main>
     </>
   );
