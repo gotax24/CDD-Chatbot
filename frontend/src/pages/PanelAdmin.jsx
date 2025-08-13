@@ -22,10 +22,11 @@ const PanelAdmin = () => {
           <h2>Gestion de usuarios</h2>
         </div>
       </Link>
-      <div>
+      <Link to="/app/admin/reports">
+        <span>icono</span>
         <h2>Gestion de Informes</h2>
         
-      </div>
+      </Link>
       <div>
         <h2>Gestion de pacientes</h2>
       </div>

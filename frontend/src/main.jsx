@@ -9,6 +9,7 @@ import PanelAdmin from "./pages/PanelAdmin.jsx";
 import Report from "./pages/Report.jsx";
 import Marketing from "./pages/Marketing.jsx";
 import UserManagement from "./pages/UserManagement.jsx";
+import ReportsManagement from "./pages/ReportsManagement.jsx";
 //autenticar y proteccion de rutas
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -27,10 +28,12 @@ createRoot(document.getElementById("root")).render(
           }
         >
           <Route path="home" element={<Home />} />
-          <Route path="report" element={<Report />} />
+          <Route path="reports" element={<Report />} />
           <Route path="marketing" element={<Marketing />} />
           <Route path="admin" element={<PanelAdmin />} />
           <Route path="admin/users" element={<UserManagement />} />
+          <Route path="admin/reports" element={<ReportsManagement />} />
+          <Route path="admin/pacients" element={"pacientes"} />
         </Route>
       </Routes>
     </BrowserRouter>

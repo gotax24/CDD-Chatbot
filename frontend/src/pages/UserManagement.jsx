@@ -13,9 +13,9 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
-  const { isOpen, openModal, closeModal } = useModalState();
   const [idUser, setIdUser] = useState(null);
   const { user } = useAuth();
+  const { isOpen, openModal, closeModal } = useModalState();
 
   useEffect(() => {
     const getUsers = async () => {
