@@ -68,10 +68,11 @@ const UserManagement = () => {
   return (
     <>
       <header>
+        <span>icono</span>
         <h1>Gestión de usuarios</h1>
-        <button onClick={() => openModal("addUser")}>Agregar Usuario</button>
       </header>
       <main>
+        <button onClick={() => openModal("addUser")}>Agregar Usuario</button>
         <table>
           <thead>
             <tr>

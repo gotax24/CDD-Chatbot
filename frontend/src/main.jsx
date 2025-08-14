@@ -1,7 +1,7 @@
 //dependecias
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-//Pagina y componentes del proyectos
+//Paginas del proyecto
 import Home from "./Home.jsx";
 import App from "./pages/App.jsx";
 import SingIn from "./pages/SignIn.jsx";
@@ -10,6 +10,7 @@ import Report from "./pages/Report.jsx";
 import Marketing from "./pages/Marketing.jsx";
 import UserManagement from "./pages/UserManagement.jsx";
 import ReportsManagement from "./pages/ReportsManagement.jsx";
+import PatientsManagement from "./pages/PatientsManagement.jsx";
 //autenticar y proteccion de rutas
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -33,7 +34,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="admin" element={<PanelAdmin />} />
           <Route path="admin/users" element={<UserManagement />} />
           <Route path="admin/reports" element={<ReportsManagement />} />
-          <Route path="admin/pacients" element={"pacientes"} />
+          <Route path="admin/patients" element={<PatientsManagement />} />
         </Route>
       </Routes>
     </BrowserRouter>

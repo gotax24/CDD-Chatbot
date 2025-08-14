@@ -13,7 +13,8 @@ const PanelAdmin = () => {
     <>
       <header>
         <h1>
-          Bienvenido {user.profile && user.profile.first_name} al Panel de Administracion
+          Bienvenido {user.profile && user.profile.first_name} al Panel de
+          Administracion
         </h1>
       </header>
       <Link to="/app/admin/users">
@@ -23,13 +24,17 @@ const PanelAdmin = () => {
         </div>
       </Link>
       <Link to="/app/admin/reports">
-        <span>icono</span>
-        <h2>Gestion de Informes</h2>
-        
+        <div className="card-admin">
+          <span>icono</span>
+          <h2>Gestion de Informes</h2>
+        </div>
       </Link>
-      <div>
-        <h2>Gestion de pacientes</h2>
-      </div>
+      <Link to="/app/admin/patients">
+        <div className="card-admin">
+          <span>icono</span>
+          <h2>Gestion de pacientes</h2>
+        </div>
+      </Link>
     </>
   );
 };
