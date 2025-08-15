@@ -15,7 +15,7 @@ const ReportsManagement = () => {
       const { data, error } = await supabase
         .from("medical_reports_view")
         .select("*");
-
+      console.log(data);
       if (error) {
         console.error("Error al obtener informes:", error.message);
         setLoading(false);
