@@ -100,7 +100,7 @@ const FormAddPatient = ({ closeModal, updateList }) => {
 
           <div className="div-modal">
             <label className="label-modal">
-              *Documento de identificacion
+              *Documento de identidad
               <select
                 {...register("letterPersonalId", {
                   required: "Debe seleccionar un tipo de documento",
