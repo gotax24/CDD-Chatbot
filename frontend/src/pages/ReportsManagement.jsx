@@ -10,6 +10,8 @@ import FormReportUpload from "../components/FormReportUpload";
 const ReportsManagement = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [idReport, setIdReport] = useState(null);
   const { user } = useAuth();
   const { isOpen, closeModal, openModal } = useModalManager();
 
@@ -20,9 +22,7 @@ const ReportsManagement = () => {
         .from("medical_reports_view")
         .select("*");
 
-      console.log(data);
       if (error) {
-        console.error(error)
         console.error("Error al obtener informes:", error.message);
         setLoading(false);
       } else {
@@ -44,6 +44,14 @@ const ReportsManagement = () => {
     setReports((prev) => [...prev, newReport]);
   };
 
+  const handleCloseDeleteModal = () => {
+
+  }
+
+  const deleteReport = async (id, route) => {
+    console.log(id, route);
+  };
+
   return (
     <>
       <header>
@@ -56,8 +64,11 @@ const ReportsManagement = () => {
           <thead>
             <tr>
               <th>ID del Informe</th>
+              <th>Nombre original</th>
+              <th>Tamaño del informe</th>
               <th>Paciente</th>
               <th>Cédula del Paciente</th>
+              <th>Teléfono del Paciente</th>
               <th>Estado</th>
               <th>Acción</th>
             </tr>
@@ -66,20 +77,25 @@ const ReportsManagement = () => {
             {reports.map((report) => (
               <tr key={report.id}>
                 <td>{report.id}</td>
+                {console.log(report)}
                 <td>{report.original_filename}</td>
-                <td>{report.file_size}</td>
-                <td>{report.id}</td>
+                <td>{(report.file_size / 1024).toFixed(2)} Kb</td>
                 <td>
-                  {report.patients
-                    ? `${report.patients.first_name} ${report.patients.last_name}`
-                    : "N/A"}
+                  {`${report.patient_first_name} ${report.patient_last_name}`}
                 </td>
-                <td>{report.patients ? report.patients.personal_id : "N/A"}</td>
-                <td>{report.patients ? report.patients.phone_number : "N/A"}</td>
+                <td>{report.personal_id}</td>
+                <td>{report.phone_number}</td>
                 <td>{report.state}</td>
                 <td>
                   <button>Ver Detalles</button>
-                  <button>Eliminar</button>
+                  <button
+                    onClick={() => {
+                      setIdReport(report.id);
+                      openModal("deleteReport");
+                    }}
+                  >
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -95,6 +111,30 @@ const ReportsManagement = () => {
           closeModal={() => closeModal("addReports")}
           updateList={handleReportsAdded}
         />
+      </Modal>
+
+      <Modal
+        isOpen={isOpen("deleteReport")}
+        closeModal={handleCloseDeleteModal}
+      >
+        <>
+          <header className="header-modal">
+            <span className="icon-modal">icono</span>
+            <h1 className="title-modal">Eliminar Informe</h1>
+          </header>
+          <main className="main-modal">
+            <h2 className="confirm-modal">
+              Estas seguro de eliminar el Informe?
+            </h2>
+            <button
+              className="button-modal"
+              disabled={deleting}
+              onClick={() => deleteReport(idReport)}
+            >
+              {deleting ? "Eliminando..." : "Confirmar"}
+            </button>
+          </main>
+        </>
       </Modal>
     </>
   );

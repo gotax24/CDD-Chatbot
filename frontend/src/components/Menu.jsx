@@ -15,8 +15,6 @@ const Menu = () => {
     }
   };
 
-  console.log(user);
-
   return (
     <header className="header-menu">
       <img src="/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />

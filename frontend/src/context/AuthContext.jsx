@@ -20,16 +20,12 @@ const AuthProvider = ({ children }) => {
         setLoading(false);
         return;
       }
-      console.log(session)
-
       // Perfil en tabla
       const { data: profile, error: errorProfile } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", session.user.id)
         .single();
-      console.log(profile)
-      console.log(errorProfile)
 
       setUser({
         session,
