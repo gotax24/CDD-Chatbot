@@ -202,8 +202,10 @@ const FormReportUpload = ({ closeModal, updateList }) => {
           {errors.root && (
             <div className="error-modal">{errors.root.message}</div>
           )}
-
-          <div className="error-modal">❌ {errors.patientNotFound}</div>
+          
+          {errors.patientNotFound && (
+            <div className="error-modal">❌ {errors.patientNotFound}</div>
+          )}
 
           <button disabled={isSubmitting}>
             {isSubmitting ? "Agregando..." : "Agregar el informe"}

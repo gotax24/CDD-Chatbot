@@ -45,7 +45,6 @@ const ReportsManagement = () => {
   };
 
   const handleCloseDeleteModal = () => {
-
   }
 
   const deleteReport = async (id, route) => {
@@ -77,7 +76,6 @@ const ReportsManagement = () => {
             {reports.map((report) => (
               <tr key={report.id}>
                 <td>{report.id}</td>
-                {console.log(report)}
                 <td>{report.original_filename}</td>
                 <td>{(report.file_size / 1024).toFixed(2)} Kb</td>
                 <td>
