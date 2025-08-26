@@ -12,7 +12,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
     formState: { errors, isSubmitting },
     setError,
   } = useForm();
-
+ 
   const uploadReport = async (formData) => {
     const patientId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
     const patientExists = await checkingExistingPatient(patientId);
@@ -25,6 +25,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
     }
 
     const file = formData.reports[0];
+    console.log("este es el file")
     console.log(file);
     //ruta
     const now = new Date();
@@ -44,6 +45,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
         .upload(route, file);
 
       if (uploadError) {
+        console.log(uploadError)
         console.error(`Error subiendo el informe: ${uploadError.message}`);
         setError("errorReport", {
           message: `Error subiendo el informe: ${uploadError.message}`,
@@ -51,6 +53,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
         return;
       }
 
+      console.log("ya se subio a la nube")
       console.log(upload);
 
       const medicalReportData = {
@@ -62,6 +65,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
         file_size: file.size,
       };
 
+      console.log(medicalReportData)
       const { data: dbData, error: dbError } = await supabase
         .from("medical_reports")
         .insert([medicalReportData]);
@@ -202,7 +206,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
           {errors.root && (
             <div className="error-modal">{errors.root.message}</div>
           )}
-          
+
           {errors.patientNotFound && (
             <div className="error-modal">❌ {errors.patientNotFound}</div>
           )}

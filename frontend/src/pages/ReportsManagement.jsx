@@ -45,10 +45,43 @@ const ReportsManagement = () => {
   };
 
   const handleCloseDeleteModal = () => {
-  }
+    setIdReport(null);
+    closeModal("deleteReport");
+  };
 
   const deleteReport = async (id, route) => {
-    console.log(id, route);
+    setDeleting(true);
+    try {
+      const { data, error } = await supabase
+        .from("medical_reports")
+        .delete()
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      console.log("Informe eliminado", data);
+      setReports((prev) => prev.filter((r) => r.id !== id));
+
+      const { error: storageError } = await supabase.storage
+        .from("medical-reports")
+        .remove([data.route]);
+
+      if (storageError) {
+        console.error("Error al eliminar el archivo del almacenamiento:", storageError);
+      } else {
+        console.log("Archivo eliminado del almacenamiento");
+      }
+
+      setDeleting(false);
+      handleCloseDeleteModal();
+    } catch (error) {
+      setDeleting(false);
+      const errorMessage = error.context?.body?.error || error.message;
+
+      console.error("Error al eliminar informe:", errorMessage);
+    }
   };
 
   return (
@@ -88,7 +121,7 @@ const ReportsManagement = () => {
                   <button>Ver Detalles</button>
                   <button
                     onClick={() => {
-                      setIdReport(report.id);
+                      setIdReport(report.id, );
                       openModal("deleteReport");
                     }}
                   >
