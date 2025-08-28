@@ -5,7 +5,6 @@ import { supabase } from "../supabaseClient.js";
 const Menu = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -31,7 +30,7 @@ const Menu = () => {
             user.profile.role === "admin" ) && (
             <>
               <li className="li-menu">
-                <Link to="/app/report">Informes</Link>
+                <Link to="/app/reports">Informes</Link>
               </li>
               
               <li className="li-menu">

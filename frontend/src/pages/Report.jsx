@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
 
 const Report = () => {
   const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchDeliverys = async () => {
@@ -33,13 +34,13 @@ const Report = () => {
       </header>
       <main>
         <nav>
-          <Link>Gestion de informes</Link>
-          <Link>Gestion de pacientes</Link>
-          <button onClick={"open modal"}>Enviar informes</button>
+          <Link to="/app/admin/reports">Gestion de informes</Link>
+          <Link to="/app/admin/patients">Gestion de pacientes</Link>
+          <button onClick={""}>Enviar informes</button>
         </nav>
         <h2>Informes enviados</h2>
         <ol>
-          {reports ? (
+          {reports.length > 0 ? (
             reports.map((report) => {
               return <li key={report.id}>{report.title}</li>;
             })

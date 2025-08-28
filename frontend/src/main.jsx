@@ -11,6 +11,7 @@ import Marketing from "./pages/Marketing.jsx";
 import UserManagement from "./pages/UserManagement.jsx";
 import ReportsManagement from "./pages/ReportsManagement.jsx";
 import PatientsManagement from "./pages/PatientsManagement.jsx";
+import Page404 from "./pages/Page404.jsx";
 //autenticar y proteccion de rutas
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -36,8 +37,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="admin/reports" element={<ReportsManagement />} />
           <Route path="admin/patients" element={<PatientsManagement />} />
         </Route>
+        <Route path="*" element={<Page404 />} />
       </Routes>
-      <Route path="*" element={<Page404 />} />
     </BrowserRouter>
   </AuthProvider>
 );

@@ -13,7 +13,7 @@ const PatientsManagement = () => {
   const [deleting, setDeleting] = useState(false);
   const [idPatient, setIdPatient] = useState(null);
   const { isOpen, openModal, closeModal } = useModalManager();
-
+  
   useEffect(() => {
     const getPatients = async () => {
       let { data: patients, error } = await supabase
@@ -85,7 +85,6 @@ const PatientsManagement = () => {
                 <td>{patient.email || "Null"}</td>
                 <td>{patient.phone_number}</td>
                 <td>
-                  <button>Editar</button>
                   <button
                     onClick={() => {
                       openModal("deletePatient");
