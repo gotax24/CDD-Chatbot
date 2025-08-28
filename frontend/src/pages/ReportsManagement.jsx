@@ -49,7 +49,7 @@ const ReportsManagement = () => {
     closeModal("deleteReport");
   };
 
-  const deleteReport = async (id, route) => {
+  const deleteReport = async (id) => {
     setDeleting(true);
     try {
       const { data, error } = await supabase

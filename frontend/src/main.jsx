@@ -37,6 +37,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="admin/patients" element={<PatientsManagement />} />
         </Route>
       </Routes>
+      <Route path="*" element={<Page404 />} />
     </BrowserRouter>
   </AuthProvider>
 );

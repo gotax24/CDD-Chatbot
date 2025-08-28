@@ -154,6 +154,7 @@ const FormAddUser = ({ closeModal }) => {
                 <option value="">-Seleccionar-</option>
                 <option value="admin">Admin</option>
                 <option value="sender">Sender</option>
+                <option value="doctor">Doctor</option>
                 <option value="viewer">Viewer</option>
               </select>
             </label>

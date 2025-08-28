@@ -28,11 +28,12 @@ const Menu = () => {
             <Link to="/app/home">Inicio</Link>
           </li>
           {(user.profile.role === "sender" ||
-            user.profile.role === "admin") && (
+            user.profile.role === "admin" ) && (
             <>
               <li className="li-menu">
                 <Link to="/app/report">Informes</Link>
               </li>
+              
               <li className="li-menu">
                 <Link to="/app/marketing">Marketing</Link>
               </li>
