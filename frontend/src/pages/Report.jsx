@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
+import useModalManager from "../hooks/useModalState";
+import FormReportSend from "../components/FormReportSend";
 
 const Report = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { isOpen, closeModal, openModal } = useModalManager();
 
   useEffect(() => {
     const fetchDeliverys = async () => {
@@ -36,7 +39,9 @@ const Report = () => {
         <nav>
           <Link to="/app/admin/reports">Gestion de informes</Link>
           <Link to="/app/admin/patients">Gestion de pacientes</Link>
-          <button onClick={""}>Enviar informes</button>
+          <button onClick={() => openModal("reportSend")}>
+            Enviar informes via Ws
+          </button>
         </nav>
         <h2>Informes enviados</h2>
         <ol>
@@ -49,6 +54,13 @@ const Report = () => {
           )}
         </ol>
       </main>
+
+      <Modal
+        isOpen={isOpen("reportSend")}
+        closeModal={() => closeModal("reportSend")}
+      >
+        <FormReportSend />
+      </Modal>
     </>
   );
 };
