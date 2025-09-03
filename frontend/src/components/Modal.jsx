@@ -1,4 +1,4 @@
-import "../CSS/Modal.css";
+import "../css/Modal.css";
 
 const Modal = ({ isOpen, children, closeModal }) => {
   if (!isOpen) return null;

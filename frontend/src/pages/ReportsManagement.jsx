@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import Loading from "../components/Loading";
+<<<<<<< Updated upstream
 import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import useModalManager from "../hooks/useModalState";
 import FormReportUpload from "../components/FormReportUpload";
+=======
+>>>>>>> Stashed changes
 
 const ReportsManagement = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+<<<<<<< Updated upstream
   const [deleting, setDeleting] = useState(false);
   const [idReport, setIdReport] = useState(null);
   const { user } = useAuth();
   const { isOpen, closeModal, openModal } = useModalManager();
+=======
+>>>>>>> Stashed changes
 
   useEffect(() => {
     setLoading(true);
@@ -21,6 +27,10 @@ const ReportsManagement = () => {
       const { data, error } = await supabase
         .from("medical_reports_view")
         .select("*");
+<<<<<<< Updated upstream
+=======
+      console.log(data);
+>>>>>>> Stashed changes
 
       if (error) {
         console.error("Error al obtener informes:", error.message);
@@ -28,15 +38,12 @@ const ReportsManagement = () => {
       } else {
         setReports(data);
       }
+      
       setLoading(false);
     };
 
     getReports();
   }, []);
-
-  if (user.profile.role !== "admin") {
-    return <Navigate to="/app/home" replace />;
-  }
 
   if (loading) return <Loading />;
 
