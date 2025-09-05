@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
+import useModalManager from "../hooks/useModalState";
 
 const FormReportSend = () => {
   const {
@@ -11,6 +12,7 @@ const FormReportSend = () => {
     setError,
   } = useForm();
   const { user } = useAuth();
+  const { isOpen, closeModal, openModal } = useModalManager();
   const [patient, setPatient] = useState([]);
   const [reports, setReports] = useState([]);
 
@@ -26,10 +28,48 @@ const FormReportSend = () => {
       setReports(data);
       console.log("Informes traidos correctamente");
     };
+
+    fetchReportInSupabase();
   }, []);
 
-  const sendReport = (formData) => {
+  const sendReport = async (formData) => {
     console.log(formData);
+
+    const cardId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
+
+    const { data: patient, error: errorPatient } = await supabase
+      .from("patient")
+      .select("*")
+      .eq("id", cardId);
+
+    if (errorPatient) {
+      console.error(errorPatient);
+      console.log("error al obtener el paciente" + errorPatient);
+
+      return;
+    }
+
+    setPatient(patient);
+    console.log("El paciente obtenido exitosamente");
+
+    const { data, error } = await supabase.invoke("send-report", {
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: `58${patient.numberPhone}`,
+        pdf_url: reports.path,
+        name: `${patient.name}${patient.lastName}`,
+      }),
+    });
+
+    if (error) {
+      console.error(error);
+      console.error("Error al enviar el informe por ws" + error.message);
+      setError("Error al enviar el mensaje por ws");
+      return;
+    }
+
+    console.log(data);
+    console.log("Se logro venezuela");
   };
 
   return (
@@ -92,10 +132,10 @@ const FormReportSend = () => {
           )}
 
           <div className="div-modal">
-            <label className="label-modal">
-              Informes a enviar
-              <input type="file" placeholder="" />
-            </label>
+            <label className="label-modal">Informes a enviar</label>
+            <button onClick={() => openModal("reports")}>
+              Elegir informe/s
+            </button>
           </div>
 
           <button disabled={isSubmitting}>
@@ -103,6 +143,17 @@ const FormReportSend = () => {
           </button>
         </form>
       </main>
+
+      <Modal
+        isOpen={isOpen("reports")}
+        closeModal={() => closeModal("reports")}
+      >
+        <ol>
+          {reports.map((report) => {
+            return <li key={report.id}>{report.title}</li>;
+          })}
+        </ol>
+      </Modal>
     </>
   );
 };
