@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
 import useModalManager from "../hooks/useModalState";
 import FormReportSend from "../components/FormReportSend";
+import Modal from "../components/Modal";
 
 const Report = () => {
   const [reports, setReports] = useState([]);
@@ -12,7 +13,7 @@ const Report = () => {
 
   useEffect(() => {
     const fetchDeliverys = async () => {
-      const { data, error } = await supabase.from("deliverys").select("*");
+      const { data, error } = await supabase.from("deliveries").select("*");
       if (error) {
         console.error("Error al traer los deliverys ", error);
         console.log(error);

@@ -3,6 +3,8 @@ import useAuth from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
 import useModalManager from "../hooks/useModalState";
+import Modal from "./Modal";
+import { tr } from "date-fns/locale";
 
 const FormReportSend = () => {
   const {
@@ -13,8 +15,10 @@ const FormReportSend = () => {
   } = useForm();
   const { user } = useAuth();
   const { isOpen, closeModal, openModal } = useModalManager();
+  //States
   const [patient, setPatient] = useState([]);
   const [reports, setReports] = useState([]);
+  const [route, setRoute] = useState("");
 
   useEffect(() => {
     const fetchReportInSupabase = async () => {
@@ -52,12 +56,22 @@ const FormReportSend = () => {
     setPatient(patient);
     console.log("El paciente obtenido exitosamente");
 
+    const { data: signed, error: signedError } = await supabase.storage
+      .from("reports")
+      .createSignedUrl(route, 60 * 5);
+
+    if (signedError) {
+      console.error(signedError);
+      console.error("Error generando URL firmada", signedError);
+      return;
+    }
+
     const { data, error } = await supabase.invoke("send-report", {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: `58${patient.numberPhone}`,
-        pdf_url: reports.path,
-        name: `${patient.name}${patient.lastName}`,
+        to: `58${patient[0].numberPhone}`,
+        pdf_url: signed.signedUrl,
+        name: `${patient[0].name}${patient[0].lastName}`,
       }),
     });
 
@@ -70,6 +84,43 @@ const FormReportSend = () => {
 
     console.log(data);
     console.log("Se logro venezuela");
+
+    const { data: newDelivery, error: errorNewDelivery } = await supabase
+      .from("deliveries")
+      .insert([
+        {
+          patientId: patient[0].id,
+          senderId: user.id,
+          status: "SENT",
+        },
+      ])
+      .select()
+      .single();
+
+    if (errorNewDelivery) {
+      console.error(errorNewDelivery);
+      console.error(
+        "Error al registrar el envio en la base de datos" +
+          errorNewDelivery.message
+      );
+      return;
+    }
+
+    console.log("Envio registrado exitosamente", newDelivery);
+    console.log("Se logro venezuela 2")
+  };
+
+  const getReports = async () => {
+    const { data, error } = await supabase.from("medical_reports").select("*");
+
+    if (error) {
+      console.error(error);
+      console.log("El error fue " + error.message);
+      setError("No se pudieron obtener los informes");
+    }
+
+    setReports(data);
+    console.log("Informes obtenidos exitosamente");
   };
 
   return (
@@ -133,7 +184,12 @@ const FormReportSend = () => {
 
           <div className="div-modal">
             <label className="label-modal">Informes a enviar</label>
-            <button onClick={() => openModal("reports")}>
+            <button
+              onClick={() => {
+                openModal("reports");
+                getReports();
+              }}
+            >
               Elegir informe/s
             </button>
           </div>
@@ -148,11 +204,32 @@ const FormReportSend = () => {
         isOpen={isOpen("reports")}
         closeModal={() => closeModal("reports")}
       >
-        <ol>
-          {reports.map((report) => {
-            return <li key={report.id}>{report.title}</li>;
-          })}
-        </ol>
+        {reports.length > 0 ? (
+          <table>
+            <thead>
+              <th>Nombre</th>
+              <th>Ruta del archivo</th>
+              <th></th>
+            </thead>
+            <tbody>
+              {reports.map((report) => {
+                return (
+                  <tr key={report.id}>
+                    <td>{report.title}</td>
+                    <td>{report.route}</td>
+                    <td>
+                      <button onClick={() => setRoute(report.route)}>
+                        Seleccionar
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <p>No hay informes disponibles</p>
+        )}
       </Modal>
     </>
   );
