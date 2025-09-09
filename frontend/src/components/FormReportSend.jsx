@@ -1,234 +1,188 @@
-import { useEffect, useState } from "react";
-import useAuth from "../hooks/useAuth";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
+import useAuth from "../hooks/useAuth";
 import useModalManager from "../hooks/useModalState";
 import Modal from "./Modal";
-import { tr } from "date-fns/locale";
 
-const FormReportSend = () => {
+const FormReportSend = ({ closeModal: closeModalFather }) => {
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm();
-  const { user } = useAuth();
-  const { isOpen, closeModal, openModal } = useModalManager();
-  //States
-  const [patient, setPatient] = useState([]);
-  const [reports, setReports] = useState([]);
-  const [route, setRoute] = useState("");
+  const { isOpen, openModal, closeModal } = useModalManager();
 
-  useEffect(() => {
-    const fetchReportInSupabase = async () => {
-      const { data, error } = await supabase.from("").select("*");
-      if (error) {
-        console.error("Error al traer los informes ", error);
-        console.log(error);
+  // Estado local
+  const [patient, setPatient] = useState(null);
+  const [reports, setReports] = useState([]);
+  const [selectedReports, setSelectedReports] = useState([]);
+  const [result, setResult] = useState(null);
+
+  // Buscar paciente y traer sus informes
+  const getPatientAndReports = async (formData) => {
+    const cardId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
+
+    try {
+      // Buscar paciente
+      const { data: patientData, error: patientError } = await supabase
+        .from("patients")
+        .select("*")
+        .eq("personal_id", cardId)
+        .single();
+
+      if (patientError || !patientData) {
+        console.error(patientError);
+        setPatient(null);
+        setReports([]);
+        setResult({ success: false, error: "Paciente no encontrado" });
         return;
       }
 
-      setReports(data);
-      console.log("Informes traidos correctamente");
-    };
+      console.log(patientData);
+      setPatient(patientData);
 
-    fetchReportInSupabase();
-  }, []);
+      // Buscar informes asociados
+      const { data: reportsData, error: reportsError } = await supabase
+        .from("medical_reports")
+        .select("*")
+        .eq("card_id", patientData.personal_id);
 
-  const sendReport = async (formData) => {
-    console.log(formData);
+      if (reportsError) throw reportsError;
 
-    const cardId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
-
-    const { data: patient, error: errorPatient } = await supabase
-      .from("patient")
-      .select("*")
-      .eq("id", cardId);
-
-    if (errorPatient) {
-      console.error(errorPatient);
-      console.log("error al obtener el paciente" + errorPatient);
-
-      return;
+      setReports(reportsData);
+      setResult(null);
+    } catch (err) {
+      console.error(err);
+      setResult({
+        success: false,
+        error: "Error al obtener datos del paciente",
+      });
     }
-
-    setPatient(patient);
-    console.log("El paciente obtenido exitosamente");
-
-    const { data: signed, error: signedError } = await supabase.storage
-      .from("reports")
-      .createSignedUrl(route, 60 * 5);
-
-    if (signedError) {
-      console.error(signedError);
-      console.error("Error generando URL firmada", signedError);
-      return;
-    }
-
-    const { data, error } = await supabase.invoke("send-report", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: `58${patient[0].numberPhone}`,
-        pdf_url: signed.signedUrl,
-        name: `${patient[0].name}${patient[0].lastName}`,
-      }),
-    });
-
-    if (error) {
-      console.error(error);
-      console.error("Error al enviar el informe por ws" + error.message);
-      setError("Error al enviar el mensaje por ws");
-      return;
-    }
-
-    console.log(data);
-    console.log("Se logro venezuela");
-
-    const { data: newDelivery, error: errorNewDelivery } = await supabase
-      .from("deliveries")
-      .insert([
-        {
-          patientId: patient[0].id,
-          senderId: user.id,
-          status: "SENT",
-        },
-      ])
-      .select()
-      .single();
-
-    if (errorNewDelivery) {
-      console.error(errorNewDelivery);
-      console.error(
-        "Error al registrar el envio en la base de datos" +
-          errorNewDelivery.message
-      );
-      return;
-    }
-
-    console.log("Envio registrado exitosamente", newDelivery);
-    console.log("Se logro venezuela 2")
   };
 
-  const getReports = async () => {
-    const { data, error } = await supabase.from("medical_reports").select("*");
-
-    if (error) {
-      console.error(error);
-      console.log("El error fue " + error.message);
-      setError("No se pudieron obtener los informes");
+  // Enviar informes seleccionados
+  const sendReports = async () => {
+    if (!patient || selectedReports.length === 0) {
+      setResult({
+        success: false,
+        error: "Debes seleccionar al menos un informe",
+      });
+      return;
     }
 
-    setReports(data);
-    console.log("Informes obtenidos exitosamente");
+    try {
+      const { data, error } = await supabase.functions.invoke("send-report", {
+        body: {
+          patientId: patient.id,
+          reportIds: selectedReports,
+          senderId: user.id,
+        },
+      });
+
+      if (error) throw error;
+
+      setResult({ success: true, data });
+      closeModalFather("reportSend");
+    } catch (err) {
+      console.error(err);
+      setResult({ success: false, error: err.message });
+    }
   };
 
   return (
     <>
       <header className="header-modal">
-        <span className="icon-modal">icono</span>
-        <h1 className="title-modal">Enviar informes WhatsApp</h1>
+        <span className="icon-modal">📄</span>
+        <h1 className="title-modal">Enviar informes por WhatsApp</h1>
       </header>
+
       <main className="main-modal">
-        <form className="form-modal" onSubmit={handleSubmit(sendReport)}>
-          <div className="div-modal">
-            <label className="label-modal">
-              *Documento de identidad del paciente
-              <select
-                {...register("letterPersonalId", {
-                  required: "Debe seleccionar un tipo de documento",
-                  validate: (value) =>
-                    value !== "-" || "Debe seleccionar un tipo válido",
-                })}
-              >
-                <option value="-">-Seleccionar-</option>
-                <option value="V">V</option>
-                <option value="J">J</option>
-                <option value="P">P</option>
-              </select>
-              <input
-                type="text"
-                className="input-modal"
-                {...register("numberPersonalId", {
-                  required: "El numero del documento esta vacio",
-                  pattern: {
-                    value: /^[0-9]{6,8}$/,
-                    message: "Debe tener entre 6 y 8 números",
-                  },
-                })}
-              />
-            </label>
-            {(errors.letterPersonalId || errors.numberPersonalId) && (
-              <span className="error-modal">
-                {errors.letterPersonalId?.message ||
-                  errors.numberPersonalId?.message}
-              </span>
-            )}
-          </div>
+        {/* Formulario de búsqueda */}
+        <form
+          className="form-modal"
+          onSubmit={handleSubmit(getPatientAndReports)}
+        >
+          <label>
+            Documento de identidad:
+            <select {...register("letterPersonalId", { required: true })}>
+              <option value="">-</option>
+              <option value="V">V</option>
+              <option value="J">J</option>
+              <option value="P">P</option>
+            </select>
+            <input
+              type="text"
+              placeholder="Número"
+              {...register("numberPersonalId", {
+                required: "Campo obligatorio",
+                pattern: { value: /^[0-9]{6,8}$/, message: "6 a 8 dígitos" },
+              })}
+            />
+          </label>
 
-          {patient ? (
-            <div className="div-modal">
-              <h2 className="subtitle-patient">Paciente encontrado: </h2>
-              <p className="data-patient">
-                {patient.name}
-                {patient.lastName}
-              </p>
-              <p className="cardId-patient">{patient.personalId}</p>
-              <p className="numberPhone-patient">{patient.numberPhone}</p>
-            </div>
-          ) : (
-            <div className="div-modal">
-              <h2> Paciente no encontrado</h2>
-            </div>
+          {errors.numberPersonalId && (
+            <span className="error">{errors.numberPersonalId.message}</span>
           )}
-
-          <div className="div-modal">
-            <label className="label-modal">Informes a enviar</label>
-            <button
-              onClick={() => {
-                openModal("reports");
-                getReports();
-              }}
-            >
-              Elegir informe/s
-            </button>
-          </div>
-
-          <button disabled={isSubmitting}>
-            {isSubmitting ? "Enviando..." : "Enviar informes"}
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Buscando..." : "Buscar paciente"}
           </button>
         </form>
+
+        {/* Mostrar paciente */}
+        {patient && (
+          <div className="patient-info">
+            <h2>Paciente encontrado:</h2>
+            <p>
+              {patient.name} {patient.lastName}
+            </p>
+            <p>CI: {patient.personal_id}</p>
+            <p>Tel: {patient.phone_number}</p>
+            <button type="button" onClick={() => openModal("reports")}>
+              Elegir informes
+            </button>
+          </div>
+        )}
+
+        {/* Resultado de envío */}
+        {result && (
+          <div className={result.success ? "success" : "error"}>
+            {result.success
+              ? "✅ Informe enviado correctamente"
+              : `❌ ${result.error}`}
+          </div>
+        )}
       </main>
 
+      {/* Modal para seleccionar informes */}
       <Modal
         isOpen={isOpen("reports")}
         closeModal={() => closeModal("reports")}
       >
         {reports.length > 0 ? (
-          <table>
-            <thead>
-              <th>Nombre</th>
-              <th>Ruta del archivo</th>
-              <th></th>
-            </thead>
-            <tbody>
-              {reports.map((report) => {
-                return (
-                  <tr key={report.id}>
-                    <td>{report.title}</td>
-                    <td>{report.route}</td>
-                    <td>
-                      <button onClick={() => setRoute(report.route)}>
-                        Seleccionar
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div>
+            <h3>Selecciona informes</h3>
+            {reports.map((report) => (
+              <label key={report.id}>
+                <input
+                  type="checkbox"
+                  checked={selectedReports.includes(report.id)}
+                  onChange={(e) => {
+                    setSelectedReports((prev) =>
+                      e.target.checked
+                        ? [...prev, report.id]
+                        : prev.filter((id) => id !== report.id)
+                    );
+                  }}
+                />
+                {report.title}
+              </label>
+            ))}
+            <button onClick={sendReports}>Enviar</button>
+          </div>
         ) : (
-          <p>No hay informes disponibles</p>
+          <p>No hay informes para este paciente</p>
         )}
       </Modal>
     </>

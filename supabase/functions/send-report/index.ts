@@ -1,33 +1,75 @@
 // supabase/functions/send-report/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+);
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
 
 serve(async (req) => {
-  try {
-    const { to, pdf_url, name } = await req.json();
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
 
-    if (!to || !pdf_url) {
-      return new Response(
-        JSON.stringify({ error: "Missing 'to' or 'pdf_url'" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+  try {
+    const { patientId, reportIds, senderId } = await req.json();
+
+    if (!patientId || !reportIds?.length || !senderId) {
+      return new Response(JSON.stringify({ error: "Missing params" }), {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
 
+    // 1. Buscar paciente
+    const { data: patient, error: patientError } = await supabase
+      .from("patient")
+      .select("id, name, lastName, numberPhone")
+      .eq("id", patientId)
+      .single();
+
+    if (patientError) throw patientError;
+
+    // 2. Firmar URLs de informes
+    const signedUrls: string[] = [];
+    for (const reportId of reportIds) {
+      const { data: report, error: reportError } = await supabase
+        .from("medical_reports")
+        .select("route, title")
+        .eq("id", reportId)
+        .single();
+      if (reportError) throw reportError;
+
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("reports")
+        .createSignedUrl(report.route, 60 * 5);
+
+      if (signedError) throw signedError;
+      signedUrls.push(signed.signedUrl);
+    }
+
+    // 3. Enviar por WhatsApp
     const WHATSAPP_API_URL = `https://graph.facebook.com/v19.0/${Deno.env.get(
       "PHONE_NUMBER_ID"
     )}/messages`;
     const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_TOKEN");
 
-    if (!WHATSAPP_API_URL || !WHATSAPP_TOKEN) {
-      return new Response(
-        JSON.stringify({ error: "Missing WhatsApp credentials" }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
-    }
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    };
 
-    // Paso 1: enviar plantilla (abre la ventana de conversación)
+    // Plantilla
     const templatePayload = {
       messaging_product: "whatsapp",
-      to,
+      to: `58${patient.numberPhone}`,
       type: "template",
       template: {
         name: "envio_informe",
@@ -35,7 +77,9 @@ serve(async (req) => {
         components: [
           {
             type: "body",
-            parameters: [{ type: "text", text: name || "Paciente" }],
+            parameters: [
+              { type: "text", text: `${patient.name} ${patient.lastName}` },
+            ],
           },
         ],
       },
@@ -43,51 +87,58 @@ serve(async (req) => {
 
     const templateResp = await fetch(WHATSAPP_API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-      },
+      headers,
       body: JSON.stringify(templatePayload),
     });
-
     const templateData = await templateResp.json();
-    if (!templateResp.ok) {
-      return new Response(JSON.stringify(templateData), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
+    if (!templateResp.ok)
+      throw new Error(`Template failed: ${JSON.stringify(templateData)}`);
+
+    // Documentos
+    const docsResults: any = [];
+    for (const url of signedUrls) {
+      const pdfPayload = {
+        messaging_product: "whatsapp",
+        to: `58${patient.numberPhone}`,
+        type: "document",
+        document: { link: url, filename: "Informe_Medico.pdf" },
+      };
+      const resp = await fetch(WHATSAPP_API_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(pdfPayload),
       });
+      const result = await resp.json();
+      docsResults.push(result);
+      if (!resp.ok) throw new Error(`Doc failed: ${JSON.stringify(result)}`);
     }
 
-    // Paso 2: enviar el PDF
-    const pdfPayload = {
-      messaging_product: "whatsapp",
-      to,
-      type: "document",
-      document: {
-        link: pdf_url,
-        filename: "Informe_Medico.pdf",
-      },
-    };
+    // 4. Registrar en deliveries
+    const { data: delivery, error: deliveryError } = await supabase
+      .from("deliveries")
+      .insert({
+        patientId: patient.id,
+        senderId,
+        status: "SENT",
+        created_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
 
-    const pdfResp = await fetch(WHATSAPP_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-      },
-      body: JSON.stringify(pdfPayload),
-    });
+    if (deliveryError) throw deliveryError;
 
-    const pdfData = await pdfResp.json();
-
-    return new Response(JSON.stringify({ templateData, pdfData }), {
-      headers: { "Content-Type": "application/json" },
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({ templateData, docsResults, delivery }),
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
   } catch (err) {
+    console.error("Error:", err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
     });
   }
 });
