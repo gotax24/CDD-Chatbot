@@ -1,6 +1,7 @@
 import useAuth from "../hooks/useAuth.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
+import "../css/Menu.css";
 
 const Menu = () => {
   const { user } = useAuth();

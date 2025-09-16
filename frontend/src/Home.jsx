@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useAuth from "./hooks/useAuth";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { supabase } from "./supabaseClient";
 import Loading from "./components/Loading";
@@ -95,6 +95,12 @@ const Home = () => {
             </nav>
           </div>
         </section>
+
+
+
+        {/*Una grafica para determinar los deliverys  */}
+
+        {/*Los informes pendientes */}
 
         {error && <p className="error-home-message">{error}</p>}
       </main>

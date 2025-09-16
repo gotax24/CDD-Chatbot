@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital@0;1&family=Merriweather:ital,opsz@0,18..144;1,18..144&display=swap");
+
+/* Variables CSS globales */
+:root {
+  --background-color: #cbdceb;
+  --primary-color: #154d71;
+  --accent-color: #3a9dff;
+  --text-color: #333;
+  --error-color: #901d1d;
+  --success-color: #15a119;
+  --font-primary: "Lato", sans-serif;
+  --font-secondary: "Merriweather", monospace;
+}
+
+/* Estilos globales para toda la aplicación */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-primary), monospace;
+  line-height: 1.6;
+}
+
+/* Contenedor general de páginas */
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Fix para problemas comunes */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Corrige problemas de texto que se desborda */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Para preservar el espacio del contenido y evitar saltos abruptos de diseño */
+.content-wrapper {
+  min-height: calc(100vh - 200px); /* Ajustar según altura del header/footer */
+}
+
+/* Utilidades de flex comunes */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+/* Espaciado consistente */
+.mt-1 {
+  margin-top: 0.5rem;
+}
+.mt-2 {
+  margin-top: 1rem;
+}
+.mt-4 {
+  margin-top: 2rem;
+}
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 1rem;
+}
+.mb-4 {
+  margin-bottom: 2rem;
+}

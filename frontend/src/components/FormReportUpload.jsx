@@ -59,7 +59,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
       const medicalReportData = {
         route: route,
         card_id: patientId,
-        state: "active",
+        state: "pending",
         created_by: user.profile.id,
         original_filename: file.name,
         file_size: file.size,

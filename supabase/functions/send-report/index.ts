@@ -47,7 +47,6 @@ serve(async (req) => {
 
     if (!reports || reports.length !== reportIds.length) {
       console.warn("Algunos IDs de informes no fueron encontrados.");
-      // throw new Error("No se encontraron todos los informes solicitados.");
     }
 
     // 3. Firmar URLs de informes (ahora el bucle es en memoria, no en BD)
@@ -131,10 +130,18 @@ serve(async (req) => {
       .select()
       .single();
 
+    const { data: updateReports, error: updateReportsError } = await supabase
+      .from("medical_reports")
+      .update({ state: "sent", deliveryId: delivery.id })
+      .in("id", reportIds)
+      .select();
+
     if (deliveryError) throw deliveryError;
 
+    if (updateReportsError) throw updateReportsError;
+
     return new Response(
-      JSON.stringify({ templateData, docsResults, delivery }),
+      JSON.stringify({ templateData, docsResults, delivery, updateReports }),
       {
         status: 200,
         headers: corsHeaders,

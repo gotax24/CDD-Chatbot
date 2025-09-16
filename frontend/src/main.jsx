@@ -15,6 +15,7 @@ import Page404 from "./pages/Page404.jsx";
 //autenticar y proteccion de rutas
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import "./main.css"
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
