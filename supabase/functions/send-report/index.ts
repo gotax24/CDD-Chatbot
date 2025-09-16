@@ -11,6 +11,7 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -37,16 +38,21 @@ serve(async (req) => {
 
     if (patientError) throw patientError;
 
-    // 2. Firmar URLs de informes
-    const signedUrls: string[] = [];
-    for (const reportId of reportIds) {
-      const { data: report, error: reportError } = await supabase
-        .from("medical_reports")
-        .select("route, title")
-        .eq("id", reportId)
-        .single();
-      if (reportError) throw reportError;
+    const { data: reports, error: reportsError } = await supabase
+      .from("medical_reports")
+      .select("route, title")
+      .in("id", reportIds);
 
+    if (reportsError) throw reportsError;
+
+    if (!reports || reports.length !== reportIds.length) {
+      console.warn("Algunos IDs de informes no fueron encontrados.");
+      // throw new Error("No se encontraron todos los informes solicitados.");
+    }
+
+    // 3. Firmar URLs de informes (ahora el bucle es en memoria, no en BD)
+    const signedUrls: string[] = [];
+    for (const report of reports) {
       const { data: signed, error: signedError } = await supabase.storage
         .from("reports")
         .createSignedUrl(report.route, 60 * 5);

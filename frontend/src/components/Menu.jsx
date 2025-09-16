@@ -16,38 +16,39 @@ const Menu = () => {
 
   return (
     <header className="header-menu">
-      <img src="/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />
-      <h1 className="title-menu">
-        Bienvenido {user.profile && user.profile.first_name} al portal de CDD
-        Maracaibo
-      </h1>
-      <nav className="nav-menu">
-        <ul className="ul-menu">
-          <li className="li-menu">
-            <Link to="/app/home">Inicio</Link>
-          </li>
-          {(user.profile.role === "sender" ||
-            user.profile.role === "admin" ) && (
-            <>
-              <li className="li-menu">
-                <Link to="/app/reports">Informes</Link>
-              </li>
-              
-              <li className="li-menu">
-                <Link to="/app/marketing">Marketing</Link>
-              </li>
-            </>
-          )}
-          {user.profile.role === "admin" && (
+      <div className="div-menu-logo">
+        <img src="/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />
+      </div>
+
+      <div className="div-menu-links">
+        <nav className="nav-menu">
+          <ul className="ul-menu">
             <li className="li-menu">
-              <Link to="/app/admin">Panel de Administrador</Link>
+              <Link to="/app/home">Inicio</Link>
             </li>
-          )}
-          <li className="li-menu">
-            <button onClick={handleLogout}>Cerrar sesión</button>
-          </li>
-        </ul>
-      </nav>
+            {(user.profile.role === "sender" ||
+              user.profile.role === "admin") && (
+              <>
+                <li className="li-menu">
+                  <Link to="/app/reports">Informes</Link>
+                </li>
+
+                <li className="li-menu">
+                  <Link to="/app/marketing">Marketing</Link>
+                </li>
+              </>
+            )}
+            {user.profile.role === "admin" && (
+              <li className="li-menu">
+                <Link to="/app/admin">Panel de Administrador</Link>
+              </li>
+            )}
+            <li className="li-menu">
+              <button onClick={handleLogout}>Cerrar sesión</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 };
