@@ -12,6 +12,7 @@ const Home = () => {
     reports: [],
     patients: [],
     deliveries: [],
+    pending: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +22,7 @@ const Home = () => {
   const formattedDate = format(date, "PPPP", { locale: es });
 
   useEffect(() => {
-    const getDeliverys = async () => {
+    const getData = async () => {
       try {
         const { data: deliveriesData, error: deliveriesError } = await supabase
           .from("deliveries")
@@ -33,8 +34,26 @@ const Home = () => {
           .from("patients")
           .select("*");
 
-        if (deliveriesError || reportsError || patientsError) {
-          console.log(deliveriesError || patientsError || reportsError);
+        const { data: pendingReports, error: pendingReportsError } =
+          await supabase
+            .from("medical_reports")
+            .select(
+              "id, original_filename, card_id, patients(first_name, last_name)"
+            )
+            .eq("state", "pending");
+
+        if (
+          deliveriesError ||
+          reportsError ||
+          patientsError ||
+          pendingReportsError
+        ) {
+          console.log(
+            deliveriesError ||
+              patientsError ||
+              reportsError ||
+              pendingReportsError
+          );
           setLoading(false);
           setError("Error al cargar las peticiones");
           return;
@@ -44,6 +63,7 @@ const Home = () => {
           deliveries: deliveriesData,
           reports: reportsData,
           patients: patientsData,
+          pending: pendingReports,
         });
         setLoading(false);
         setError(null);
@@ -53,7 +73,7 @@ const Home = () => {
       }
     };
 
-    getDeliverys();
+    getData();
   }, [user]);
 
   if (loading) return <Loading />;
@@ -95,12 +115,26 @@ const Home = () => {
             </nav>
           </div>
         </section>
-
-
+        <section className="section-home-pending">
+          <h2>Informes pendientes</h2>
+          {data.pending.length === 0 ? (
+            <p className="message-pending">
+              🥳 Felicitaciones no hay informes pendientes
+            </p>
+          ) : (
+            <ol className="ol-pending">
+              {data.pending.map((report) => (
+                <li key={report.id}>
+                  nombre: {report.original_filename} - paciente:{" "}
+                  {report.patients?.first_name} {report.patients?.last_name} -
+                  cédula: {report.card_id}
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
 
         {/*Una grafica para determinar los deliverys  */}
-
-        {/*Los informes pendientes */}
 
         {error && <p className="error-home-message">{error}</p>}
       </main>
