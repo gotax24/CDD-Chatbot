@@ -83,7 +83,7 @@ const Home = () => {
       <header className="header-home">
         <div className="welcome-message">
           <h1 className="title-home">
-            Bienvenido {user.profile.first_name} {user.profile.last_name} al
+            Bienvenido {user?.profile?.first_name} {user?.profile?.last_name} al
             portal de CDD Maracaibo
           </h1>
         </div>

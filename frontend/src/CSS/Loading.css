@@ -1,3 +1,17 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75vh; 
+  width: 100%;
+  background: transparent;
+}
+
+.loading svg {
+  width: 120px; /* antes era 64px */
+  height: 90px; /* antes era 48px */
+}
+
 /* From Uiverse.io by milley69 */
 .loading svg polyline {
   fill: none;
@@ -8,12 +22,12 @@
 
 .loading svg polyline#back {
   fill: none;
-  stroke: #132b96fe;
+  stroke: var(--primary-color);
 }
 
 .loading svg polyline#front {
   fill: none;
-  stroke: #4472cd;
+  stroke: var(--accent-color);
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
@@ -28,3 +42,4 @@
     stroke-dashoffset: 0;
   }
 }
+

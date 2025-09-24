@@ -37,8 +37,8 @@ const Menu = () => {
                 <Link to="/app/home">Inicio</Link>
               </div>
             </li>
-            {(user.profile.role === "sender" ||
-              user.profile.role === "admin") && (
+            {(user?.profile?.role === "sender" ||
+              user?.profile?.role === "admin") && (
               <>
                 <li className="li-menu">
                   <div className="div-icon-menu">
@@ -59,7 +59,7 @@ const Menu = () => {
                 </li>
               </>
             )}
-            {user.profile.role === "admin" && (
+            {user?.profile?.role === "admin" && (
               <li className="li-menu">
                 <div className="div-icon-menu">
                   <img src={iconAdmin} alt="icono de admin" />

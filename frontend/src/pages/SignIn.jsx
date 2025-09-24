@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth.jsx";
+import "../css/SingIn.css"
 
 const SignIn = () => {
   const {
@@ -45,7 +46,6 @@ const SignIn = () => {
       if (data) {
         navigate("/app/home");
       }
-
     } catch (error) {
       // Manejo de errores en caso de que algo falle
       console.error("Error al iniciar sesión:", error);
@@ -58,73 +58,80 @@ const SignIn = () => {
 
   return (
     <>
-      <header className="header-login">
-        <img
-          className="logo-login"
-          src="/Logo-CDD-Radioterapia-Maracaibo-300px-Blanco.avif"
-          alt="Logo de CDD Maracaibo"
-        />
-        <h1 className="title-login">Bienvenido a CDD Maracaibo</h1>
-        <h2 className="subtitle-login">+Tecnologia +Inovacion +Medicina</h2>
-      </header>
-      <main className="main-login">
-        <form className="form-login" onSubmit={handleSubmit(onSubmit)}>
-          <label className="label-login">
-            Email:
-            <input
-              type="email"
-              placeholder="ejemplo@ejemplo.com"
-              className="input-login"
-              {...register("email", {
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "El email no es válido",
-                },
-                required: "El email es obligatorio",
-              })}
+      <main className="login-container">
+        <div className="login-card">
+          <header className="login-header">
+            <img
+              className="login-logo"
+              src="./Logo-CDDmcbo.webp"
+              alt="Logo de CDD Maracaibo"
             />
-            {errors.email && (
-              <span className="error-message">{errors.email.message}</span>
-            )}
-          </label>
-          <label className="label-login">
-            Contraseña:
-            <input
-              type="password"
-              placeholder="********"
-              className="input-login"
-              {...register("password", {
-                required: "La contraseña es obligatoria",
-                minLength: {
-                  value: 6,
-                  message: "La contraseña debe tener al menos 6 caracteres",
-                },
-                pattern: {
-                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-                  message:
-                    "La contraseña debe contener al menos una letra mayúscula, una minúscula y un número",
-                },
-              })}
-            />
-            {errors.password && (
-              <span className="error-message">{errors.password.message}</span>
-            )}
-          </label>
-          <button
-            className="button-login"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
-          </button>
+            <h1 className="login-title">Bienvenido al portal CDD Maracaibo</h1>
+            <p className="login-subtitle">
+              +Tecnología · +Innovación · +Medicina
+            </p>
+          </header>
 
-          {errors.root && (
-            <span className="error-message">{errors.root.message}</span>
-          )}
-          {errors.auth && (
-            <span className="error-message">{errors.auth.message}</span>
-          )}
-        </form>
+          <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="ejemplo@ejemplo.com"
+                className="input-login"
+                {...register("email", {
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "El email no es válido",
+                  },
+                  required: "El email es obligatorio",
+                })}
+              />
+              {errors.email && (
+                <span className="error-message">{errors.email.message}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label>Contraseña</label>
+              <input
+                type="password"
+                placeholder="********"
+                className="input-login"
+                {...register("password", {
+                  required: "La contraseña es obligatoria",
+                  minLength: {
+                    value: 6,
+                    message: "Debe tener al menos 6 caracteres",
+                  },
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                    message:
+                      "Debe contener al menos una mayúscula, una minúscula y un número",
+                  },
+                })}
+              />
+              {errors.password && (
+                <span className="error-message">{errors.password.message}</span>
+              )}
+            </div>
+
+            <button
+              className="button-login"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
+            </button>
+
+            {errors.root && (
+              <span className="error-message">{errors.root.message}</span>
+            )}
+            {errors.auth && (
+              <span className="error-message">{errors.auth.message}</span>
+            )}
+          </form>
+        </div>
       </main>
     </>
   );
