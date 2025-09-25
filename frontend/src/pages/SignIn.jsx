@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth.jsx";
-import "../css/SingIn.css"
+import '../css/SignIn.css';
 
 const SignIn = () => {
   const {
