@@ -1,11 +1,15 @@
+//React y librerias
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import useModalManager from "../hooks/useModalState";
 import useAuth from "../hooks/useAuth";
+//componentes
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
 import FormReportUpload from "../components/FormReportUpload";
+//assets
 import reportManage from "../assets/forms/reportManage.svg";
+//css
 import "../css/Management.css";
 
 const ReportsManagement = () => {
@@ -49,6 +53,7 @@ const ReportsManagement = () => {
 
   const deleteReport = async (id) => {
     setDeleting(true);
+    
     try {
       const { data, error } = await supabase
         .from("medical_reports")
@@ -132,7 +137,9 @@ const ReportsManagement = () => {
                 {user?.profile?.role === "admin" && (
                   <>
                     <td className="td-management">
-                      <button className="button-management">Ver Detalles</button>
+                      <button className="button-management">
+                        Ver Detalles
+                      </button>
                       <button
                         className="delete-management"
                         onClick={() => {

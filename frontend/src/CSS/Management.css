@@ -95,10 +95,15 @@
   font-size: 0.9rem;
   color: #fff;
   border: none;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   border-radius: 6px;
   padding: 0.6rem 1rem;
   background-color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.button-management:hover {
+  background-color: var(--accent-color);
 }
 
 /* Modal */

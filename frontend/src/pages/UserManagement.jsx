@@ -12,12 +12,13 @@ import FormEditUser from "../components/FormEditUser";
 //assets
 import userManagement from "../assets/forms/user.svg";
 //css
-import "../css/Management.css"
+import "../css/Management.css";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState(null);
   const [idUser, setIdUser] = useState(null);
   const { user } = useAuth();
   const { isOpen, openModal, closeModal } = useModalState();
@@ -40,6 +41,13 @@ const UserManagement = () => {
 
   const deleteUser = async (idUser) => {
     setDeleting(true);
+
+    if (idUser.includes("aa27a4f5-")) {
+      setError("No puedes eliminar este usuario");
+      setDeleting(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke("delete-user", {
         body: { user_id: idUser },
@@ -147,6 +155,7 @@ const UserManagement = () => {
             >
               {deleting ? "Eliminando..." : "Confirmar"}
             </button>
+            {error && <p className="error-modal">{error}</p>}
           </main>
         </>
       </Modal>
