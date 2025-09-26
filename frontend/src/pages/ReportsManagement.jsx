@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import useModalManager from "../hooks/useModalState";
+import useAuth from "../hooks/useAuth";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
-import useModalManager from "../hooks/useModalState";
 import FormReportUpload from "../components/FormReportUpload";
+import reportManage from "../assets/forms/reportManage.svg";
+import "../css/Management.css";
 
 const ReportsManagement = () => {
   const [reports, setReports] = useState([]);
@@ -11,6 +14,7 @@ const ReportsManagement = () => {
   const [deleting, setDeleting] = useState(false);
   const [idReport, setIdReport] = useState(null);
   const { isOpen, closeModal, openModal } = useModalManager();
+  const { user } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -25,7 +29,7 @@ const ReportsManagement = () => {
       } else {
         setReports(data);
       }
-      
+
       setLoading(false);
     };
 
@@ -63,7 +67,10 @@ const ReportsManagement = () => {
         .remove([data.route]);
 
       if (storageError) {
-        console.error("Error al eliminar el archivo del almacenamiento:", storageError);
+        console.error(
+          "Error al eliminar el archivo del almacenamiento:",
+          storageError
+        );
       } else {
         console.log("Archivo eliminado del almacenamiento");
       }
@@ -80,48 +87,64 @@ const ReportsManagement = () => {
 
   return (
     <>
-      <header>
-        <span>icono</span>
-        <h1>Gestión de informes</h1>
+      <header className="header-management">
+        <img
+          className="icon-management"
+          src={reportManage}
+          alt="Icono de informe"
+        />
+        <h1 className="title-management">Gestión de informes</h1>
       </header>
-      <main>
-        <button onClick={() => openModal("addReports")}>Agregar informe</button>
-        <table>
-          <thead>
-            <tr>
-              <th>ID del Informe</th>
-              <th>Nombre original</th>
-              <th>Tamaño del informe</th>
-              <th>Paciente</th>
-              <th>Cédula del Paciente</th>
-              <th>Teléfono del Paciente</th>
-              <th>Estado</th>
-              <th>Acción</th>
+      <main className="main-management">
+        <button
+          className="add-management"
+          onClick={() => openModal("addReports")}
+        >
+          Agregar informe
+        </button>
+        <table className="table-management">
+          <thead className="thead-management">
+            <tr className="tr-management">
+              <th className="th-management">ID del Informe</th>
+              <th className="th-management">Nombre original</th>
+              <th className="th-management">Tamaño del informe</th>
+              <th className="th-management">Paciente</th>
+              <th className="th-management">Cédula del Paciente</th>
+              <th className="th-management">Teléfono del Paciente</th>
+              <th className="th-management">Estado</th>
+              <th className="th-management">Acción</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="tbody-mangement">
             {reports.map((report) => (
-              <tr key={report.id}>
-                <td>{report.id}</td>
-                <td>{report.original_filename}</td>
-                <td>{(report.file_size / 1024).toFixed(2)} Kb</td>
-                <td>
+              <tr className="tr-management" key={report.id}>
+                <td className="td-management">{report.id}</td>
+                <td className="td-management">{report.original_filename}</td>
+                <td className="td-management">
+                  {(report.file_size / 1024).toFixed(2)} Kb
+                </td>
+                <td className="td-management">
                   {`${report.patient_first_name} ${report.patient_last_name}`}
                 </td>
-                <td>{report.personal_id}</td>
-                <td>{report.phone_number}</td>
-                <td>{report.state}</td>
-                <td>
-                  <button>Ver Detalles</button>
-                  <button
-                    onClick={() => {
-                      setIdReport(report.id, );
-                      openModal("deleteReport");
-                    }}
-                  >
-                    Eliminar
-                  </button>
-                </td>
+                <td className="td-management">{report.personal_id}</td>
+                <td className="td-management">{report.phone_number}</td>
+                <td className="td-management">{report.state}</td>
+                {user?.profile?.role === "admin" && (
+                  <>
+                    <td className="td-management">
+                      <button className="button-management">Ver Detalles</button>
+                      <button
+                        className="delete-management"
+                        onClick={() => {
+                          setIdReport(report.id);
+                          openModal("deleteReport");
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>

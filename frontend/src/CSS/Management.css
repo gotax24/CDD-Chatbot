@@ -7,7 +7,7 @@
   
 }
 
-.icono-management {
+.icon-management {
   width: 48px;
   height: 48px;
 }
@@ -89,6 +89,18 @@
   background-color: #b21818;
 }
 
+.button-management{
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 0.9rem;
+  color: #fff;
+  border: none;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  background-color: var(--primary-color);
+}
+
 /* Modal */
 .header-modal {
   display: flex;
@@ -109,7 +121,7 @@
   color: var(--text-color);
 }
 
-.button-modal {
+.button-modal-delete {
   background-color: var(--error-color);
   color: #fff;
   border: none;
@@ -120,11 +132,11 @@
   transition: background 0.2s ease;
 }
 
-.button-modal:disabled {
+.button-modal-delete:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.button-modal:hover:not(:disabled) {
+.button-modal-delete:hover:not(:disabled) {
   background-color: #b21818;
 }

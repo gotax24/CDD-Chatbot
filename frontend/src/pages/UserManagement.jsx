@@ -1,3 +1,4 @@
+//React y librerias
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
@@ -8,6 +9,10 @@ import Modal from "../components/Modal";
 import FormAddUser from "../components/FormAddUser";
 import Loading from "../components/Loading";
 import FormEditUser from "../components/FormEditUser";
+//assets
+import userManagement from "../assets/forms/user.svg";
+//css
+import "../css/Management.css"
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -67,34 +72,37 @@ const UserManagement = () => {
 
   return (
     <>
-      <header>
-        <span>icono</span>
-        <h1>Gestión de usuarios</h1>
+      <header className="header-management">
+        <img className="icon-management" src={userManagement} alt="" />
+        <h1 className="title-management">Gestión de usuarios</h1>
       </header>
-      <main>
-        <button onClick={() => openModal("addUser")}>Agregar Usuario</button>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Email</th>
-              <th>Username</th>
-              <th>Nombre y Apellido</th>
-              <th>Rol</th>
-              <th>Acciones</th>
+      <main className="main-management">
+        <button className="add-management" onClick={() => openModal("addUser")}>
+          Agregar Usuario
+        </button>
+        <table className="table-management">
+          <thead className="thead-management">
+            <tr className="tr-management">
+              <th className="th-management">ID</th>
+              <th className="th-management">Email</th>
+              <th className="th-management">Username</th>
+              <th className="th-management">Nombre y Apellido</th>
+              <th className="th-management">Rol</th>
+              <th className="th-management">Acciones</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="tbody-management">
             {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.email}</td>
-                <td>{user.username}</td>
-                <td>{`${user.first_name} ${user.last_name}`}</td>
-                <td>{user.role}</td>
-                <td>
-                  <button>Editar</button>
+              <tr className="tr-management" key={user.id}>
+                <td className="td-management">{user.id}</td>
+                <td className="td-management">{user.email}</td>
+                <td className="td-management">{user.username}</td>
+                <td className="td-management">{`${user.first_name} ${user.last_name}`}</td>
+                <td className="td-management">{user.role}</td>
+                <td className="td-management">
+                  <button className="button-management">Editar</button>
                   <button
+                    className="delete-management"
                     onClick={() => {
                       setIdUser(user.id), openModal("deleteUser");
                     }}
@@ -133,7 +141,7 @@ const UserManagement = () => {
               Estas seguro de eliminar el usuario?
             </h2>
             <button
-              className="button-modal"
+              className="button-modal-delete"
               disabled={deleting}
               onClick={() => deleteUser(idUser)}
             >

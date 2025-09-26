@@ -12,7 +12,7 @@ import FormAddPatient from "../components/FormAddPatient";
 //assets
 import patient from "../assets/forms/patient.svg";
 //css
-import "../css/PatientManagement.css"
+import "../css/Management.css"
 
 const PatientsManagement = () => {
   const [patients, setPatients] = useState([]);
@@ -61,7 +61,7 @@ const PatientsManagement = () => {
     <>
       <header className="header-management">
         <img
-          className="icono-management"
+          className="icon-management"
           src={patient}
           alt="Icono de un hospital"
         />
@@ -144,7 +144,7 @@ const PatientsManagement = () => {
               Estas seguro de eliminar el paciente?
             </h2>
             <button
-              className="button-modal"
+              className="button-modal-delete"
               disabled={deleting}
               onClick={() => deletePatient(idPatient)}
             >
