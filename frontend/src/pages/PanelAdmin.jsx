@@ -1,6 +1,9 @@
 import { Link, Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { CircleUserRound } from "lucide-react";
+import userCicle from "../assets/forms/user.svg";
+import reportManage from "../assets/forms/reportManage.svg";
+import patient from "../assets/forms/patient.svg";
+import "../css/PanelAdmin.css";
 
 const PanelAdmin = () => {
   const { user } = useAuth();
@@ -10,32 +13,34 @@ const PanelAdmin = () => {
   }
 
   return (
-    <>
-      <header>
+    <div className="panel-admin">
+      <header className="panel-header">
         <h1>
-          Bienvenido {user.profile && user.profile.first_name} al Panel de
-          Administracion
+          Bienvenido{" "}
+          <span className="highlight">
+            {user.profile && user.profile.first_name}
+          </span>{" "}
+          al Panel de Administración
         </h1>
       </header>
-      <Link to="/app/admin/users">
-        <div className="card-admin">
-          <CircleUserRound />
-          <h2>Gestion de usuarios</h2>
-        </div>
-      </Link>
-      <Link to="/app/admin/reports">
-        <div className="card-admin">
-          <span>icono</span>
-          <h2>Gestion de Informes</h2>
-        </div>
-      </Link>
-      <Link to="/app/admin/patients">
-        <div className="card-admin">
-          <span>icono</span>
-          <h2>Gestion de pacientes</h2>
-        </div>
-      </Link>
-    </>
+
+      <div className="admin-cards">
+        <Link to="/app/admin/users" className="card-admin">
+          <img src={userCicle} alt="Icono de usuario" />
+          <h2>Gestión de Usuarios</h2>
+        </Link>
+
+        <Link to="/app/admin/reports" className="card-admin">
+          <img src={reportManage} alt="Icono de reporte médico" />
+          <h2>Gestión de Informes</h2>
+        </Link>
+
+        <Link to="/app/admin/patients" className="card-admin">
+          <img src={patient} alt="Icono de hospital" />
+          <h2>Gestión de Pacientes</h2>
+        </Link>
+      </div>
+    </div>
   );
 };
 

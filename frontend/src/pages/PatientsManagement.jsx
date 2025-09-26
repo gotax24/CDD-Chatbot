@@ -1,11 +1,18 @@
+//react y librerias
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import useModalManager from "../hooks/useModalState";
 import { supabase } from "../supabaseClient";
+import useAuth from "../hooks/useAuth";
+//componentes
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
 import FormAddPatient from "../components/FormAddPatient";
+//assets
+import patient from "../assets/forms/patient.svg";
+//css
+import "../css/PatientManagement.css"
 
 const PatientsManagement = () => {
   const [patients, setPatients] = useState([]);
@@ -13,7 +20,8 @@ const PatientsManagement = () => {
   const [deleting, setDeleting] = useState(false);
   const [idPatient, setIdPatient] = useState(null);
   const { isOpen, openModal, closeModal } = useModalManager();
-  
+  const { user } = useAuth();
+
   useEffect(() => {
     const getPatients = async () => {
       let { data: patients, error } = await supabase
@@ -51,49 +59,61 @@ const PatientsManagement = () => {
 
   return (
     <>
-      <header>
-        <span>icono</span>
-        <h1>Gestión de paciente</h1>
+      <header className="header-management">
+        <img
+          className="icono-management"
+          src={patient}
+          alt="Icono de un hospital"
+        />
+        <h1 className="title-management">Gestión de paciente</h1>
       </header>
-      <main>
-        <button onClick={() => openModal("addPatient")}>
+      <main className="main-management">
+        <button
+          className="add-management"
+          onClick={() => openModal("addPatient")}
+        >
           Agregar paciente
         </button>
-        <table>
-          <thead>
-            <tr>
-              <th>ID del paciente</th>
-              <th>Fecha de su creacion</th>
-              <th>Nombre y apellido</th>
-              <th>Cédula del Paciente</th>
-              <th>Correo</th>
-              <th>Telefono</th>
-              <th>Acción</th>
+        <table className="table-management">
+          <thead className="thead-management">
+            <tr className="tr-management">
+              <th className="th-management">ID del paciente</th>
+              <th className="th-management">Fecha de su creacion</th>
+              <th className="th-management">Nombre y apellido</th>
+              <th className="th-management">Cédula del Paciente</th>
+              <th className="th-management">Correo</th>
+              <th className="th-management">Telefono</th>
+              {user?.profile?.role === "admin" && (
+                <th className="th-management">Acción</th>
+              )}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="tbody-management">
             {patients.map((patient) => (
-              <tr key={patient.id}>
-                <td>{patient.id}</td>
-                <td>
+              <tr className="tr-management" key={patient.id}>
+                <td className="td-management">{patient.id}</td>
+                <td className="td-management">
                   {format(patient.created_at, "dd 'de' MMMM 'de' yyyy, HH:mm", {
                     locale: es,
                   })}
                 </td>
-                <td>{`${patient.first_name} ${patient.last_name}`}</td>
-                <td>{patient.personal_id}</td>
-                <td>{patient.email || "Null"}</td>
-                <td>{patient.phone_number}</td>
-                <td>
-                  <button
-                    onClick={() => {
-                      openModal("deletePatient");
-                      setIdPatient(patient.id);
-                    }}
-                  >
-                    Eliminar
-                  </button>
-                </td>
+                <td className="td-management">{`${patient.first_name} ${patient.last_name}`}</td>
+                <td className="td-management">{patient.personal_id}</td>
+                <td className="td-management">{patient.email || "Null"}</td>
+                <td className="td-management">{patient.phone_number}</td>
+                {user?.profile?.role === "admin" && (
+                  <td className="td-management">
+                    <button
+                      className="delete-management"
+                      onClick={() => {
+                        openModal("deletePatient");
+                        setIdPatient(patient.id);
+                      }}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

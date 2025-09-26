@@ -6,9 +6,9 @@ html, body {
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* fuerza a ocupar toda la pantalla */
+  min-height: 100vh;
 }
 
 .app-content {
-  flex: 1; /* este empuja al footer */
+  flex: 1; 
 }

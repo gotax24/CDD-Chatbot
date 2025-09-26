@@ -1,0 +1,130 @@
+/* Contenedor general */
+.header-management {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  
+}
+
+.icono-management {
+  width: 48px;
+  height: 48px;
+}
+
+.title-management {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  font-family: var(--font-primary);
+}
+
+/* Botón agregar */
+.add-management {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: background 0.2s ease;
+}
+
+.add-management:hover {
+  background-color: var(--accent-color);
+}
+
+/* Tabla */
+.table-management {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.thead-management {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-weight: 600;
+}
+
+.tr-management {
+  text-align: left;
+}
+
+.th-management,
+.td-management {
+  padding: 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font-secondary);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tbody-management tr:nth-child(even) {
+  background-color: #f9fbfd;
+}
+
+.tbody-management tr:hover {
+  background-color: #eef6fc;
+}
+
+/* Botón eliminar */
+.delete-management {
+  background-color: var(--error-color);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.delete-management:hover {
+  background-color: #b21818;
+}
+
+/* Modal */
+.header-modal {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.title-modal {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.confirm-modal {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.button-modal {
+  background-color: var(--error-color);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.button-modal:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.button-modal:hover:not(:disabled) {
+  background-color: #b21818;
+}
