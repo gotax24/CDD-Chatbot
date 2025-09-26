@@ -93,9 +93,9 @@ const Home = () => {
       </header>
       <main className="main-home">
         <section className="section-home-info">
-          <p>Informes enviados: {data.deliveries.length}</p>
-          <p>Informes subidos: {data.reports.length}</p>
-          <p>Pacientes registrados: {data.patients.length}</p>
+          <p>Informes enviados: {data?.deliveries?.length}</p>
+          <p>Informes subidos: {data?.reports?.length}</p>
+          <p>Pacientes registrados: {data?.patients?.length}</p>
         </section>
         <section className="section-home-links">
           <h2 className="subtitle-home">Accesos rápidos</h2>
@@ -117,17 +117,17 @@ const Home = () => {
         </section>
         <section className="section-home-pending">
           <h2>Informes pendientes</h2>
-          {data.pending.length === 0 ? (
+          {data?.pending?.length === 0 ? (
             <p className="message-pending">
               🥳 Felicitaciones no hay informes pendientes
             </p>
           ) : (
             <ol className="ol-pending">
-              {data.pending.map((report) => (
-                <li key={report.id}>
-                  nombre: {report.original_filename} - paciente:{" "}
-                  {report.patients?.first_name} {report.patients?.last_name} -
-                  cédula: {report.card_id}
+              {data?.pending.map((report) => (
+                <li key={report?.id}>
+                  nombre: {report?.original_filename} - paciente:{" "}
+                  {report?.patients?.first_name} {report.patients?.last_name} -
+                  cédula: {report?.card_id}
                 </li>
               ))}
             </ol>
