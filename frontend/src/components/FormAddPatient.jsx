@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
+import "../css/FormsModal.css"
 
 const FormAddPatient = ({ closeModal, updateList }) => {
   const {
@@ -10,8 +11,6 @@ const FormAddPatient = ({ closeModal, updateList }) => {
   } = useForm();
 
   const addPatient = async (formData) => {
-    console.log(formData);
-
     const patientId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
 
     const patientData = {
@@ -29,7 +28,6 @@ const FormAddPatient = ({ closeModal, updateList }) => {
       .single();
 
     if (error) {
-      console.error(error.message);
       setError("root", {
         type: "manual",
         message: `Error: ${error.message}`,
@@ -37,17 +35,22 @@ const FormAddPatient = ({ closeModal, updateList }) => {
       return;
     }
 
-    console.log("Paciente agregado: ", data);
     updateList(data);
     closeModal();
   };
 
   return (
     <>
+      {/* HEADER MODAL */}
       <header className="header-modal">
-        <span className="icon-modal">icono</span>
-        <h1 className="title-modal">Agregar paciente</h1>
+        <div className="header-content">
+          <span className="icon-modal">👤</span>
+          <h1 className="title-modal">Agregar paciente</h1>
+        </div>
+        <hr className="divider-modal" />
       </header>
+
+      {/* FORMULARIO */}
       <main className="main-modal">
         <form className="form-modal" onSubmit={handleSubmit(addPatient)}>
           <div className="div-modal">
@@ -100,30 +103,33 @@ const FormAddPatient = ({ closeModal, updateList }) => {
 
           <div className="div-modal">
             <label className="label-modal">
-              *Documento de identidad
-              <select
-                {...register("letterPersonalId", {
-                  required: "Debe seleccionar un tipo de documento",
-                  validate: (value) =>
-                    value !== "-" || "Debe seleccionar un tipo válido",
-                })}
-              >
-                <option value="-">-Seleccionar-</option>
-                <option value="V">V</option>
-                <option value="J">J</option>
-                <option value="P">P</option>
-              </select>
-              <input
-                type="text"
-                className="input-modal"
-                {...register("numberPersonalId", {
-                  required: "El numero del documento esta vacio",
-                  pattern: {
-                    value: /^[0-9]{6,8}$/,
-                    message: "Debe tener entre 6 y 8 números",
-                  },
-                })}
-              />
+              *Documento de identidad:
+              <div className="id-group">
+                <select
+                  className="select-modal"
+                  {...register("letterPersonalId", {
+                    required: "Debe seleccionar un tipo de documento",
+                    validate: (value) =>
+                      value !== "-" || "Debe seleccionar un tipo válido",
+                  })}
+                >
+                  <option value="-">-Seleccionar-</option>
+                  <option value="V">V</option>
+                  <option value="J">J</option>
+                  <option value="P">P</option>
+                </select>
+                <input
+                  type="text"
+                  className="input-modal"
+                  {...register("numberPersonalId", {
+                    required: "El número del documento está vacío",
+                    pattern: {
+                      value: /^[0-9]{6,8}$/,
+                      message: "Debe tener entre 6 y 8 números",
+                    },
+                  })}
+                />
+              </div>
             </label>
             {(errors.letterPersonalId || errors.numberPersonalId) && (
               <span className="error-modal">
@@ -152,14 +158,15 @@ const FormAddPatient = ({ closeModal, updateList }) => {
               <span className="error-modal">{errors.email.message}</span>
             )}
           </div>
+
           <div className="div-modal">
             <label className="label-modal">
-              *Numero de telefono:
+              *Número de teléfono:
               <input
                 type="number"
                 className="input-modal"
                 {...register("phoneNumber", {
-                  required: "El numero esta vacio",
+                  required: "El número está vacío",
                   pattern: {
                     value: /^[0-9]{10,11}$/,
                     message: "Debe tener 10 u 11 números (ej: 04141234567)",
@@ -167,12 +174,15 @@ const FormAddPatient = ({ closeModal, updateList }) => {
                 })}
               />
             </label>
-            {errors.email && (
-              <span className="error-modal">{errors.phoneNumber.message}</span>
+            {errors.phoneNumber && (
+              <span className="error-modal">
+                {errors.phoneNumber.message}
+              </span>
             )}
           </div>
+
           <button className="button-modal" disabled={isSubmitting}>
-            {isSubmitting ? "Agregando..." : "Agregar al paciente"}
+            {isSubmitting ? "Agregando..." : "Agregar paciente"}
           </button>
         </form>
       </main>

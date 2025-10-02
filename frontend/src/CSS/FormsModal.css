@@ -1,0 +1,29 @@
+.header-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-modal {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.title-modal {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.divider-modal {
+  border: none;
+  border-bottom: 1px solid var(--accent-color);
+  margin: 0;
+}
