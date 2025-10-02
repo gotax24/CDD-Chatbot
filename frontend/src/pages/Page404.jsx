@@ -1,6 +1,9 @@
+//react-router
 import { Link } from "react-router-dom";
+//assets
 import img404 from "../assets/404.svg";
-import "../css/Page404.css";
+//css
+import "../CSS/Page404.css";
 
 const Page404 = () => {
   return (

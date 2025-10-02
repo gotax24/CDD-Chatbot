@@ -12,7 +12,7 @@ import FormEditUser from "../components/FormEditUser";
 //assets
 import userManagement from "../assets/forms/user.svg";
 //css
-import "../css/Management.css";
+import "../CSS/Management.css";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);

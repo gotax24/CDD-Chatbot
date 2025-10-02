@@ -1,8 +1,11 @@
+//react-router
 import { Link } from "react-router-dom";
+//assets
 import ig from "../assets/footer/ig.svg";
 import likendln from "../assets/footer/likendln.svg";
 import whatsapp from "../assets/footer/whatsapp.svg";
-import "../css/Footer.css";
+//css
+import "../CSS/Footer.css";
 
 const Footer = () => {
   const year = new Date().getFullYear();

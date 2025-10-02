@@ -1,9 +1,13 @@
+//react-router
 import { Link, Navigate } from "react-router-dom";
+//hooks
 import useAuth from "../hooks/useAuth";
+//assets
 import userCicle from "../assets/forms/user.svg";
 import reportManage from "../assets/forms/reportManage.svg";
 import patient from "../assets/forms/patient.svg";
-import "../css/PanelAdmin.css";
+//css
+import "../CSS/PanelAdmin.css";
 
 const PanelAdmin = () => {
   const { user } = useAuth();

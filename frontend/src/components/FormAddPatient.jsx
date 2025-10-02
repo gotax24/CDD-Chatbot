@@ -1,6 +1,8 @@
+//libraries
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
-import "../css/FormsModal.css"
+//css
+import "../CSS/FormsModal.css"
 
 const FormAddPatient = ({ closeModal, updateList }) => {
   const {

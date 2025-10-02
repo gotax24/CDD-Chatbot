@@ -12,7 +12,7 @@ import FormAddPatient from "../components/FormAddPatient";
 //assets
 import patient from "../assets/forms/patient.svg";
 //css
-import "../css/Management.css"
+import "../CSS/Management.css"
 
 const PatientsManagement = () => {
   const [patients, setPatients] = useState([]);

@@ -1,4 +1,4 @@
-//React y librerias
+//hooks, react and libraries
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import useModalManager from "../hooks/useModalState";
@@ -10,7 +10,7 @@ import FormReportUpload from "../components/FormReportUpload";
 //assets
 import reportManage from "../assets/forms/reportManage.svg";
 //css
-import "../css/Management.css";
+import "../CSS/Management.css";
 
 const ReportsManagement = () => {
   const [reports, setReports] = useState([]);

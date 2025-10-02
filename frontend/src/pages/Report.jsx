@@ -1,12 +1,16 @@
+//hooks, react and libraries
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Link } from "react-router-dom";
-import Loading from "../components/Loading";
 import useModalManager from "../hooks/useModalState";
+//components
 import FormReportSend from "../components/FormReportSend";
+import Loading from "../components/Loading";
 import Modal from "../components/Modal";
+//assets
 import reportIcon from "../assets/menu/report.svg";
-import "../css/Page.css";
+//css
+import "../CSS/Page.css";
 
 const Report = () => {
   const [reports, setReports] = useState([]);

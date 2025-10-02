@@ -1,7 +1,10 @@
+//react-router
 import { Outlet } from "react-router-dom";
+//components
 import Menu from "../components/Menu.jsx";
 import Footer from "../components/Footer.jsx";
-import '../css/App.css';
+//css
+import '../CSS/App.css';
 
 const App = () => {
   return (
