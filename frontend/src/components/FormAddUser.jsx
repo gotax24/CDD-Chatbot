@@ -1,6 +1,7 @@
 //libraries
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
+import addUser from "../assets/forms/AddUser.svg";
 
 const FormAddUser = ({ closeModal }) => {
   const {
@@ -40,7 +41,11 @@ const FormAddUser = ({ closeModal }) => {
   return (
     <>
       <header className="header-modal">
-        <span className="icon-modal">icono</span>
+        <img
+          className="icon-modal"
+          src={addUser}
+          alt="Icono de agregar usuario"
+        />
         <h1 className="title-modal">Agregar usuario</h1>
       </header>
       <main className="main-modal">

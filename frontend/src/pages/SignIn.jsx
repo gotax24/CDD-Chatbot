@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 //hoks
 import useAuth from "../hooks/useAuth.jsx";
 //css
-import '../CSS/SignIn.css';
+import "../CSS/SignIn.css";
 
 const SignIn = () => {
   const {

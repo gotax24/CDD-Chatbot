@@ -1,5 +1,3 @@
-const Marketing = () => {
+const Marketing = () => {};
 
-}
-
-export default Marketing
+export default Marketing;

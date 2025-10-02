@@ -1,8 +1,10 @@
 //libraries
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
+//assets
+import addPatientIcon from "../assets/forms/AddPatient.svg";
 //css
-import "../CSS/FormsModal.css"
+import "../CSS/FormsModal.css";
 
 const FormAddPatient = ({ closeModal, updateList }) => {
   const {
@@ -46,7 +48,11 @@ const FormAddPatient = ({ closeModal, updateList }) => {
       {/* HEADER MODAL */}
       <header className="header-modal">
         <div className="header-content">
-          <span className="icon-modal">👤</span>
+          <img
+            className="icon-modal"
+            src={addPatientIcon}
+            alt="Icono de agregar paciente"
+          />
           <h1 className="title-modal">Agregar paciente</h1>
         </div>
         <hr className="divider-modal" />
@@ -177,9 +183,7 @@ const FormAddPatient = ({ closeModal, updateList }) => {
               />
             </label>
             {errors.phoneNumber && (
-              <span className="error-modal">
-                {errors.phoneNumber.message}
-              </span>
+              <span className="error-modal">{errors.phoneNumber.message}</span>
             )}
           </div>
 

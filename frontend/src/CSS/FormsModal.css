@@ -1,29 +1,187 @@
+/* Contenedor del contenido del modal */
+.modal-content,
+.main-modal {
+  width: min(720px, 95%);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 12px 30px rgba(21, 77, 113, 0.12);
+  font-family: var(--font-primary);
+  color: var(--text-color);
+  box-sizing: border-box;
+}
+
+/* HEADER del modal (ícono + título) */
 .header-modal {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-bottom: 0.5rem;
+  margin: 0;
 }
 
+/* fila con icono a la izquierda y título */
 .header-content {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
+/* icono (acepta span, svg o img dentro) */
 .icon-modal {
-  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
   color: var(--primary-color);
+  background: rgba(21, 77, 113, 0.04);
+  border-radius: 8px;
 }
 
+/* si usas imagen dentro del span */
+.icon-modal img,
+.icon-modal svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: none; /* si quieres colorear svgs usa fill="currentColor" */
+}
+
+/* Título del modal */
 .title-modal {
-  font-size: 1.2rem;
-  font-weight: bold;
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: 1.05rem;
+  font-weight: 700;
   color: var(--primary-color);
 }
 
+/* Línea divisoria fina con color de acento */
 .divider-modal {
-  border: none;
-  border-bottom: 1px solid var(--accent-color);
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(58,157,255,0.00) 0%,
+    var(--accent-color) 50%,
+    rgba(58,157,255,0.00) 100%);
+  opacity: 0.45;
   margin: 0;
+}
+
+/* FORM */
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+/* Grupo de campo */
+.div-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Label */
+.label-modal {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Inputs y selects */
+.input-modal,
+.select-modal {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 46, 60, 0.08);
+  background: #ffffff;
+  font-family: var(--font-primary);
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  box-sizing: border-box;
+}
+
+.select-modal {
+  appearance: none;
+  max-width: 140px;
+}
+
+/* Grupo especial para documento (select + input lado a lado) */
+.id-group {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.id-group .select-modal {
+  flex: 0 0 110px;
+}
+
+/* Focus */
+.input-modal:focus,
+.select-modal:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 6px rgba(58, 157, 255, 0.07);
+}
+
+/* Mensajes de error */
+.error-modal {
+  color: var(--error-color);
+  font-size: 0.86rem;
+  margin-top: 0.25rem;
+}
+
+/* Botón principal del modal */
+.button-modal {
+  align-self: flex-end;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s ease, transform .06s ease;
+}
+
+.button-modal:hover:not(:disabled) {
+  background: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.button-modal:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+}
+
+/* Pequeñas utilidades dentro del modal */
+.helper-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Adaptación móvil */
+@media (max-width: 600px) {
+  .modal-content,
+  .main-modal {
+    padding: 1rem;
+    width: 94%;
+  }
+  .id-group {
+    gap: 0.4rem;
+  }
+  .icon-modal {
+    width: 36px;
+    height: 36px;
+  }
 }

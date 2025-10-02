@@ -53,7 +53,7 @@ const ReportsManagement = () => {
 
   const deleteReport = async (id) => {
     setDeleting(true);
-    
+
     try {
       const { data, error } = await supabase
         .from("medical_reports")

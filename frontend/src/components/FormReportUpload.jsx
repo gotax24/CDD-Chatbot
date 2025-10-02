@@ -4,6 +4,8 @@ import { supabase } from "../supabaseClient";
 import { useState } from "react";
 //hooks
 import useAuth from "../hooks/useAuth";
+//assets
+import addReport from "../assets/forms/AddReport.svg";
 
 const FormReportUpload = ({ closeModal, updateList }) => {
   const [patientData, setPatientData] = useState();
@@ -14,7 +16,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
     formState: { errors, isSubmitting },
     setError,
   } = useForm();
- 
+
   const uploadReport = async (formData) => {
     const patientId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
     const patientExists = await checkingExistingPatient(patientId);
@@ -27,7 +29,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
     }
 
     const file = formData.reports[0];
-    console.log("este es el file")
+    console.log("este es el file");
     console.log(file);
     //ruta
     const now = new Date();
@@ -47,7 +49,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
         .upload(route, file);
 
       if (uploadError) {
-        console.log(uploadError)
+        console.log(uploadError);
         console.error(`Error subiendo el informe: ${uploadError.message}`);
         setError("errorReport", {
           message: `Error subiendo el informe: ${uploadError.message}`,
@@ -55,7 +57,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
         return;
       }
 
-      console.log("ya se subio a la nube")
+      console.log("ya se subio a la nube");
       console.log(upload);
 
       const medicalReportData = {
@@ -67,7 +69,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
         file_size: file.size,
       };
 
-      console.log(medicalReportData)
+      console.log(medicalReportData);
       const { data: dbData, error: dbError } = await supabase
         .from("medical_reports")
         .insert([medicalReportData]);
@@ -122,7 +124,11 @@ const FormReportUpload = ({ closeModal, updateList }) => {
   return (
     <>
       <header className="header-modal">
-        <span className="icon-modal">icono</span>
+        <img
+          className="icon-modal"
+          src={addReport}
+          alt="Icono de agregar reporte"
+        />
         <h1 className="title-modal">Subir informe</h1>
       </header>
       <main className="main-modal">
@@ -133,6 +139,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
               <input
                 type="file"
                 accept=".pdf"
+                className="input-modal"
                 {...register("reports", {
                   required: "El informe no esta seleccionado",
                   validate: {
@@ -160,6 +167,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
             <label className="label-modal">
               Documento de identidad
               <select
+              className="select-modal"
                 {...register("letterPersonalId", {
                   required: "Debe seleccionar un tipo de documento",
                   validate: (value) =>
@@ -213,7 +221,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
             <div className="error-modal">❌ {errors.patientNotFound}</div>
           )}
 
-          <button disabled={isSubmitting}>
+          <button className="button-modal" disabled={isSubmitting}>
             {isSubmitting ? "Agregando..." : "Agregar el informe"}
           </button>
         </form>
