@@ -1,13 +1,9 @@
-//react and libraries
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
-//hooks
 import useAuth from "../hooks/useAuth";
 import useModalManager from "../hooks/useModalState";
-//components
 import Modal from "./Modal";
-//assets
 import reportSend from "../assets/forms/ReportSend.svg";
 
 const FormReportSend = ({ closeModal: closeModalFather }) => {

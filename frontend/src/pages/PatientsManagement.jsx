@@ -1,17 +1,13 @@
-//react y librerias
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import useModalManager from "../hooks/useModalState";
 import { supabase } from "../supabaseClient";
 import useAuth from "../hooks/useAuth";
-//componentes
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
 import FormAddPatient from "../components/FormAddPatient";
-//assets
 import patient from "../assets/forms/patient.svg";
-//css
 import "../CSS/Management.css";
 
 const PatientsManagement = () => {

@@ -1,10 +1,7 @@
-//react and libraries
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
 import { useState } from "react";
-//hooks
 import useAuth from "../hooks/useAuth";
-//assets
 import addReport from "../assets/forms/AddReport.svg";
 
 const FormReportUpload = ({ closeModal, updateList }) => {

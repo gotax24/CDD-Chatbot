@@ -1,17 +1,13 @@
-//React y librerias
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import useAuth from "../hooks/useAuth";
 import useModalState from "../hooks/useModalState";
-//componentes
 import Modal from "../components/Modal";
 import FormAddUser from "../components/FormAddUser";
 import Loading from "../components/Loading";
 import FormEditUser from "../components/FormEditUser";
-//assets
 import userManagement from "../assets/forms/user.svg";
-//css
 import "../CSS/Management.css";
 
 const UserManagement = () => {

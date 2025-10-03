@@ -1,9 +1,6 @@
-//libraries
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
-//assets
 import addPatientIcon from "../assets/forms/AddPatient.svg";
-//css
 import "../CSS/FormsModal.css";
 
 const FormAddPatient = ({ closeModal, updateList }) => {
@@ -45,7 +42,6 @@ const FormAddPatient = ({ closeModal, updateList }) => {
 
   return (
     <>
-      {/* HEADER MODAL */}
       <header className="header-modal">
         <div className="header-content">
           <img
@@ -58,7 +54,6 @@ const FormAddPatient = ({ closeModal, updateList }) => {
         <hr className="divider-modal" />
       </header>
 
-      {/* FORMULARIO */}
       <main className="main-modal">
         <form className="form-modal" onSubmit={handleSubmit(addPatient)}>
           <div className="div-modal">

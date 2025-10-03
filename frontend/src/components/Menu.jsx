@@ -1,15 +1,12 @@
-//hooks and libraries
 import useAuth from "../hooks/useAuth.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
-//assets
 import iconLogout from "../assets/menu/logOut.svg";
 import iconReport from "../assets/menu/report.svg";
 import iconHome from "../assets/menu/iconHome.svg";
 import iconMarketing from "../assets/menu/iconMarketing.svg";
 import iconAdmin from "../assets/menu/iconAdmin.svg";
-//css
-import "../css/Menu.css";
+import "../CSS/Menu.css";
 
 const Menu = () => {
   const { user } = useAuth();

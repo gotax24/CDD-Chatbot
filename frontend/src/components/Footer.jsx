@@ -1,10 +1,7 @@
-//react-router
 import { Link } from "react-router-dom";
-//assets
 import ig from "../assets/footer/ig.svg";
 import likendln from "../assets/footer/likendln.svg";
 import whatsapp from "../assets/footer/whatsapp.svg";
-//css
 import "../CSS/Footer.css";
 
 const Footer = () => {
@@ -22,7 +19,6 @@ const Footer = () => {
           <p className="footer-title">CDD Maracaibo</p>
         </div>
 
-        {/* Enlaces rápidos */}
         <div className="container-links">
           <h3 className="footer-subtitle">Enlaces rápidos</h3>
           <ul className="list-links">
@@ -38,7 +34,6 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Contacto */}
         <div className="container-contact">
           <h3 className="footer-subtitle">Contactos</h3>
           <a
@@ -53,7 +48,6 @@ const Footer = () => {
           <p className="text-contact">📞 +584140674354</p>
         </div>
 
-        {/* Redes sociales */}
         <div className="container-social-media">
           <h3 className="footer-subtitle">Síguenos</h3>
           <div className="social-media-icons">
@@ -93,7 +87,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Créditos y año */}
       <div className="container-credits">
         <p className="text-credits">
           &copy; {year} CDD Maracaibo | Desarrollado por Ing. Ernesto Bracho R.

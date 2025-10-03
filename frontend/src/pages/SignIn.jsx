@@ -1,10 +1,7 @@
-//libraries
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient.js";
 import { useForm } from "react-hook-form";
-//hoks
 import useAuth from "../hooks/useAuth.jsx";
-//css
 import "../CSS/SignIn.css";
 
 const SignIn = () => {

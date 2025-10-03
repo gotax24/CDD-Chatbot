@@ -1,15 +1,11 @@
-//hooks, react and libraries
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import useModalManager from "../hooks/useModalState";
 import useAuth from "../hooks/useAuth";
-//componentes
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
 import FormReportUpload from "../components/FormReportUpload";
-//assets
 import reportManage from "../assets/forms/reportManage.svg";
-//css
 import "../CSS/Management.css";
 
 const ReportsManagement = () => {

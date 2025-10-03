@@ -1,4 +1,3 @@
-//libraries
 import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
 import addUser from "../assets/forms/AddUser.svg";
