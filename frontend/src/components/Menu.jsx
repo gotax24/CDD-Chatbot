@@ -1,16 +1,17 @@
-import useAuth from "../hooks/useAuth.jsx";
-import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "../supabaseClient.js";
-import iconLogout from "../assets/menu/logOut.svg";
-import iconReport from "../assets/menu/report.svg";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { supabase } from "../supabaseClient";
 import iconHome from "../assets/menu/iconHome.svg";
+import iconReport from "../assets/menu/report.svg";
 import iconMarketing from "../assets/menu/iconMarketing.svg";
 import iconAdmin from "../assets/menu/iconAdmin.svg";
+import iconLogout from "../assets/menu/logOut.svg";
 import "../CSS/Menu.css";
 
 const Menu = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -22,64 +23,73 @@ const Menu = () => {
 
   return (
     <header className="header-menu">
+      {/* Logo */}
       <div className="div-menu-logo">
-        <img src="/Logo-CDDmcbo.webp" alt="Logo de CDD Maracaibo" />
+        <Link to="/app/home">
+          <img
+            className="logo-menu"
+            src="/Logo-CDDmcbo.webp"
+            alt="Logo de CDD Maracaibo"
+          />
+        </Link>
       </div>
 
-      <div className="div-menu-links">
-        <nav className="nav-menu">
-          <ul className="ul-menu">
-            <li className="li-menu">
+      {/* Navegación */}
+      <nav className="nav-menu">
+        <ul className="ul-menu">
+          <li className="li-menu">
+            <Link to="/app/home" className="link-menu">
               <div className="div-icon-menu">
                 <img src={iconHome} alt="Icono de inicio" />
               </div>
-              <div className="div-link-menu">
-                <Link to="/app/home">Inicio</Link>
-              </div>
-            </li>
-            {(user?.profile?.role === "sender" ||
-              user?.profile?.role === "admin") && (
-              <>
-                <li className="li-menu">
+              <span>Inicio</span>
+            </Link>
+          </li>
+
+          {(user?.profile?.role === "sender" ||
+            user?.profile?.role === "admin") && (
+            <>
+              <li className="li-menu">
+                <Link to="/app/reports" className="link-menu">
                   <div className="div-icon-menu">
                     <img src={iconReport} alt="Icono de informes" />
                   </div>
-                  <div className="div-link-menu">
-                    <Link to="/app/reports">Informes</Link>
-                  </div>
-                </li>
+                  <span>Informes</span>
+                </Link>
+              </li>
 
-                <li className="li-menu">
+              <li className="li-menu">
+                <Link to="/app/marketing" className="link-menu">
                   <div className="div-icon-menu">
                     <img src={iconMarketing} alt="Icono de marketing" />
                   </div>
-                  <div className="div-link-menu">
-                    <Link to="/app/marketing">Marketing</Link>
-                  </div>
-                </li>
-              </>
-            )}
-            {user?.profile?.role === "admin" && (
-              <li className="li-menu">
-                <div className="div-icon-menu">
-                  <img src={iconAdmin} alt="icono de admin" />
-                </div>
-                <div className="div-link-menu">
-                  <Link to="/app/admin">Panel de Administrador</Link>
-                </div>
+                  <span>Marketing</span>
+                </Link>
               </li>
-            )}
+            </>
+          )}
+
+          {user?.profile?.role === "admin" && (
             <li className="li-menu">
-              <div className="div-icon-menu">
-                <img src={iconLogout} alt="Icono de cerrar cesion" />
-              </div>
-              <div className="div-button-link">
-                <button onClick={handleLogout}>Cerrar sesión</button>
-              </div>
+              <Link to="/app/admin" className="link-menu">
+                <div className="div-icon-menu">
+                  <img src={iconAdmin} alt="Icono de admin" />
+                </div>
+                <span>Panel de Administrador</span>
+              </Link>
             </li>
-          </ul>
-        </nav>
-      </div>
+          )}
+
+          <li className="li-menu">
+            <button className="link-menu button-logout" onClick={handleLogout}>
+              <div className="div-icon-menu">
+                <img src={iconLogout} alt="Icono de cerrar sesión" />
+              </div>
+              <span>Cerrar sesión</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 };

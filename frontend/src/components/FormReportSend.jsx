@@ -5,6 +5,7 @@ import useAuth from "../hooks/useAuth";
 import useModalManager from "../hooks/useModalState";
 import Modal from "./Modal";
 import reportSend from "../assets/forms/ReportSend.svg";
+import "../CSS/FormReportSend.css";
 
 const FormReportSend = ({ closeModal: closeModalFather }) => {
   const { user } = useAuth();
@@ -14,11 +15,11 @@ const FormReportSend = ({ closeModal: closeModalFather }) => {
     formState: { errors, isSubmitting },
   } = useForm();
   const { isOpen, openModal, closeModal } = useModalManager();
-  //State
   const [patient, setPatient] = useState(null);
   const [selectedReports, setSelectedReports] = useState([]);
   const [reports, setReports] = useState([]);
   const [result, setResult] = useState(null);
+
   // Buscar paciente y traer sus informes
   const getPatientAndReports = async (formData) => {
     const cardId = `${formData.letterPersonalId}${formData.numberPersonalId}`;
@@ -106,15 +107,16 @@ const FormReportSend = ({ closeModal: closeModalFather }) => {
           className="form-modal"
           onSubmit={handleSubmit(getPatientAndReports)}
         >
-          <label>
+          <label className="label-modal-send">
             Documento de identidad:
-            <select {...register("letterPersonalId", { required: true })}>
+            <select className="select-modal" {...register("letterPersonalId", { required: true })}>
               <option value="">-</option>
               <option value="V">V</option>
               <option value="J">J</option>
               <option value="P">P</option>
             </select>
             <input
+            className="input-modal"
               type="text"
               placeholder="Número"
               {...register("numberPersonalId", {
@@ -127,7 +129,7 @@ const FormReportSend = ({ closeModal: closeModalFather }) => {
           {errors.numberPersonalId && (
             <span className="error">{errors.numberPersonalId.message}</span>
           )}
-          <button type="submit" disabled={isSubmitting}>
+          <button className="button-modal" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Buscando..." : "Buscar paciente"}
           </button>
         </form>
@@ -135,13 +137,13 @@ const FormReportSend = ({ closeModal: closeModalFather }) => {
         {/* Mostrar paciente */}
         {patient && (
           <div className="patient-info">
-            <h2>Paciente encontrado:</h2>
-            <p>
+            <h2 className="subtitle-modal">Paciente encontrado:</h2>
+            <p className="patient-name">
               {patient.name} {patient.lastName}
             </p>
-            <p>CI: {patient.personal_id}</p>
-            <p>Tel: {patient.phone_number}</p>
-            <button type="button" onClick={() => openModal("reports")}>
+            <p className="id-patient">CI: {patient.personal_id}</p>
+            <p className="cellphone-patient">Tel: {patient.phone_number}</p>
+            <button className="button-modal" type="button" onClick={() => openModal("reports")}>
               Elegir informes
             </button>
           </div>
@@ -163,18 +165,15 @@ const FormReportSend = ({ closeModal: closeModalFather }) => {
         closeModal={() => closeModal("reports")}
       >
         {reports.length > 0 ? (
-          <div>
-            <h3>Selecciona informes</h3>
+          <div className="reports-selection">
+            <h3 className="subtitle-modal">Selecciona informes</h3>
             {reports.map((report) => (
               <label
+              className="label-modal"
                 key={report.id}
-                style={{
-                  color: "white",
-                  display: "block",
-                  marginBottom: "8px",
-                }}
               >
                 <input
+                className="checkbox-modal"
                   type="checkbox"
                   checked={selectedReports.includes(report.id)}
                   onChange={(e) => {
@@ -188,10 +187,10 @@ const FormReportSend = ({ closeModal: closeModalFather }) => {
                 {report.id} - {report.original_filename || "Informe sin nombre"}
               </label>
             ))}
-            <button onClick={sendReports}>Enviar</button>
+            <button className="button-modal" onClick={sendReports}>Enviar</button>
           </div>
         ) : (
-          <p>No hay informes para este paciente</p>
+          <p className="no-reports">No hay informes para este paciente</p>
         )}
       </Modal>
     </>
