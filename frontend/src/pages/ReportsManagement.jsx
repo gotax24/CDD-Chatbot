@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 import Modal from "../components/Modal";
 import FormReportUpload from "../components/FormReportUpload";
 import reportManage from "../assets/forms/reportManage.svg";
+import ViewPdfButton from "../components/ViewPdfButton";
 import "../CSS/Management.css";
 
 const ReportsManagement = () => {
@@ -119,6 +120,7 @@ const ReportsManagement = () => {
           <tbody className="tbody-mangement">
             {reports.map((report) => (
               <tr className="tr-management" key={report.id}>
+                {console.log(report)}
                 <td className="td-management">{report.id}</td>
                 <td className="td-management">{report.original_filename}</td>
                 <td className="td-management">
@@ -133,9 +135,7 @@ const ReportsManagement = () => {
                 {user?.profile?.role === "admin" && (
                   <>
                     <td className="td-management">
-                      <button className="button-management">
-                        Ver Detalles
-                      </button>
+                      <ViewPdfButton route={report.route} />
                       <button
                         className="delete-management"
                         onClick={() => {
