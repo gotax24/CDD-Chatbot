@@ -161,7 +161,7 @@ const FormReportUpload = ({ closeModal, updateList }) => {
             </label>
           </div>
           <div className="div-modal">
-            <label className="label-modal">
+            <label className="label-modal-send">
               Documento de identidad
               <select
               className="select-modal"
