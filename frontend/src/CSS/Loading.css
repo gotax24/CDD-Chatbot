@@ -8,8 +8,8 @@
 }
 
 .loading svg {
-  width: 120px; /* antes era 64px */
-  height: 90px; /* antes era 48px */
+  width: 120px; 
+  height: 90px;
 }
 
 /* From Uiverse.io by milley69 */
@@ -42,4 +42,3 @@
     stroke-dashoffset: 0;
   }
 }
-

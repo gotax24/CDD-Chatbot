@@ -1,4 +1,3 @@
-/* ===== Header general ===== */
 .header-menu {
   display: flex;
   justify-content: space-between;
@@ -11,14 +10,12 @@
   z-index: 1000;
 }
 
-/* Logo */
 .logo-menu {
   height: 50px;
   width: auto;
   display: block;
 }
 
-/* ===== Navegación ===== */
 .ul-menu {
   list-style: none;
   display: flex;
@@ -32,7 +29,6 @@
   align-items: center;
 }
 
-/* Enlaces del menú */
 .link-menu {
   display: flex;
   align-items: center;
@@ -53,7 +49,6 @@
   transform: translateY(-1px);
 }
 
-/* Íconos */
 .div-icon-menu img {
   width: 22px;
   height: 22px;
@@ -67,7 +62,6 @@
     hue-rotate(193deg) brightness(98%) contrast(101%);
 }
 
-/* ===== Botón de cerrar sesión ===== */
 .button-logout {
   background: none;
   border: none;
@@ -96,6 +90,6 @@
   }
 
   .link-menu span {
-    display: none; /* Solo íconos en pantallas pequeñas */
+    display: none; 
   }
 }
