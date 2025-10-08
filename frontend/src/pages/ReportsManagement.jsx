@@ -120,26 +120,25 @@ const ReportsManagement = () => {
           <tbody className="tbody-mangement">
             {reports.map((report) => (
               <tr className="tr-management" key={report.id}>
-                {console.log(report)}
-                <td className="td-management">{report.id}</td>
-                <td className="td-management">{report.original_filename}</td>
+                <td className="td-management">{report?.id}</td>
+                <td className="td-management">{report?.original_filename}</td>
                 <td className="td-management">
-                  {(report.file_size / 1024).toFixed(2)} Kb
+                  {(report?.file_size / 1024).toFixed(2)} Kb
                 </td>
                 <td className="td-management">
-                  {`${report.patient_first_name} ${report.patient_last_name}`}
+                  {`${report?.patient_first_name} ${report?.patient_last_name}`}
                 </td>
-                <td className="td-management">{report.personal_id}</td>
-                <td className="td-management">{report.phone_number}</td>
-                <td className="td-management">{report.state}</td>
+                <td className="td-management">{report?.personal_id}</td>
+                <td className="td-management">{report?.phone_number}</td>
+                <td className="td-management">{report?.state}</td>
                 {user?.profile?.role === "admin" && (
                   <>
                     <td className="td-management">
-                      <ViewPdfButton route={report.route} />
+                      <ViewPdfButton route={report?.route} />
                       <button
                         className="delete-management"
                         onClick={() => {
-                          setIdReport(report.id);
+                          setIdReport(report?.id);
                           openModal("deleteReport");
                         }}
                       >
