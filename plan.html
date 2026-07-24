@@ -1,0 +1,1433 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CDD Chatbot - Plan de Mejora v2 (Checklist Interactivo)</title>
+    <style>
+      :root {
+        --bg: #0f0f14;
+        --surface: #1a1a24;
+        --surface2: #222231;
+        --border: #2e2e3e;
+        --text: #d4d4dc;
+        --text2: #9898a8;
+        --accent: #6366f1;
+        --accent2: #818cf8;
+        --red: #f43f5e;
+        --orange: #f97316;
+        --yellow: #eab308;
+        --green: #22c55e;
+        --radius: 10px;
+        --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+      }
+      .light {
+        --bg: #f4f4fa;
+        --surface: #ffffff;
+        --surface2: #ececf4;
+        --border: #d8d8e4;
+        --text: #1a1a24;
+        --text2: #63636f;
+        --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        transition:
+          background 0.25s,
+          color 0.25s;
+      }
+
+      /* ===== Hero ===== */
+      header.hero {
+        background: linear-gradient(
+          135deg,
+          #1e1b4b 0%,
+          #312e81 45%,
+          #4f46e5 100%
+        );
+        color: #fff;
+        padding: 2.5rem 1.5rem 2rem;
+        text-align: center;
+      }
+      header.hero h1 {
+        font-size: clamp(1.4rem, 4vw, 2.1rem);
+        margin-bottom: 0.4rem;
+      }
+      header.hero p {
+        opacity: 0.85;
+        max-width: 720px;
+        margin: 0 auto;
+        font-size: 0.95rem;
+      }
+      .hero-badges {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .hero-badges span {
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 0.2rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+      }
+
+      /* ===== Barra de progreso global ===== */
+      .global-progress {
+        max-width: 720px;
+        margin: 1.2rem auto 0;
+        text-align: left;
+      }
+      .global-progress .gp-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+        opacity: 0.9;
+      }
+      .progress-track {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #34d399, #22c55e);
+        border-radius: 999px;
+        transition: width 0.4s ease;
+      }
+
+      /* ===== Toolbar ===== */
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: color-mix(in srgb, var(--surface) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+        padding: 0.6rem 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn {
+        padding: 0.4rem 0.85rem;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--text);
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.82rem;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          transform 0.1s;
+        white-space: nowrap;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+      .btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .btn.danger:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 4rem;
+      }
+
+      /* ===== Fases ===== */
+      .phase {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 1.2rem;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .phase-header {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 1.1rem;
+        cursor: pointer;
+        user-select: none;
+        background: var(--surface2);
+      }
+      .phase-header:hover {
+        filter: brightness(1.06);
+      }
+      .phase-toggle {
+        font-size: 0.8rem;
+        color: var(--text2);
+        transition: transform 0.25s;
+        flex-shrink: 0;
+      }
+      .phase.collapsed .phase-toggle {
+        transform: rotate(-90deg);
+      }
+      .phase-title {
+        flex: 1;
+        min-width: 0;
+      }
+      .phase-title h2 {
+        font-size: 1.05rem;
+      }
+      .phase-title p {
+        font-size: 0.78rem;
+        color: var(--text2);
+      }
+      .phase-count {
+        font-size: 0.75rem;
+        color: var(--text2);
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .phase-bar {
+        height: 6px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        flex-basis: 90px;
+        flex-shrink: 0;
+      }
+      .phase-bar .progress-fill {
+        background: linear-gradient(90deg, var(--accent2), var(--accent));
+      }
+      .phase.done .phase-bar .progress-fill {
+        background: linear-gradient(90deg, #34d399, #22c55e);
+      }
+      .phase-body {
+        padding: 0.6rem;
+      }
+      .phase.collapsed .phase-body {
+        display: none;
+      }
+
+      /* ===== Tareas ===== */
+      .task {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin: 0.55rem;
+        background: var(--surface);
+        transition:
+          opacity 0.25s,
+          border-color 0.2s;
+      }
+      .task:hover {
+        border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+      }
+      .task.done {
+        opacity: 0.62;
+      }
+      .task.done .task-title {
+        text-decoration: line-through;
+      }
+      .task-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        padding: 0.75rem 0.85rem;
+        cursor: pointer;
+      }
+      .task-check {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--text2);
+        border-radius: 6px;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 0.2rem;
+        position: relative;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .task-check:checked {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .task-check:checked::after {
+        content: "✓";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .task-check:focus-visible {
+        outline: 2px solid var(--accent2);
+        outline-offset: 2px;
+      }
+      .task-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .task-title {
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .task-meta {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-top: 0.3rem;
+      }
+      .badge {
+        font-size: 0.68rem;
+        padding: 0.12rem 0.5rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--text2);
+        background: var(--surface2);
+      }
+      .badge.sev-critica {
+        color: #fff;
+        background: var(--red);
+        border-color: var(--red);
+      }
+      .badge.sev-alta {
+        color: #fff;
+        background: var(--orange);
+        border-color: var(--orange);
+      }
+      .badge.sev-media {
+        color: #1a1a24;
+        background: var(--yellow);
+        border-color: var(--yellow);
+      }
+      .badge.sev-mejora {
+        color: #fff;
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge.file {
+        font-family: ui-monospace, monospace;
+      }
+      .task-detail {
+        display: none;
+        padding: 0 0.85rem 0.85rem 3.2rem;
+        font-size: 0.86rem;
+        color: var(--text2);
+      }
+      .task.open .task-detail {
+        display: block;
+      }
+      .task-detail p {
+        margin-bottom: 0.5rem;
+      }
+      .task-detail strong {
+        color: var(--text);
+      }
+      .task-detail code {
+        font-family: ui-monospace, monospace;
+        font-size: 0.8em;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        padding: 0.1em 0.35em;
+        border-radius: 5px;
+        word-break: break-word;
+      }
+      .detail-row {
+        margin-bottom: 0.45rem;
+      }
+      .detail-label {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--accent2);
+        margin-right: 0.3rem;
+      }
+      .light .detail-label {
+        color: var(--accent);
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--text2);
+        padding: 3rem 1rem;
+        display: none;
+      }
+
+      /* ===== Toast ===== */
+      .toast {
+        position: fixed;
+        bottom: 1.2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(120%);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 0.6rem 1.2rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease;
+        z-index: 100;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      footer {
+        text-align: center;
+        color: var(--text2);
+        font-size: 0.78rem;
+        padding: 1.5rem 1rem 2.5rem;
+      }
+
+      @media (max-width: 560px) {
+        .phase-bar {
+          flex-basis: 60px;
+        }
+        .task-detail {
+          padding-left: 0.85rem;
+        }
+      }
+
+      @media print {
+        .toolbar,
+        .toast,
+        .btn {
+          display: none !important;
+        }
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .phase,
+        .task {
+          border-color: #ccc;
+          box-shadow: none;
+        }
+        .task-detail {
+          display: block !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <h1>🏥 CDD Chatbot — Plan de Mejora v2</h1>
+      <p>
+        Checklist interactivo: bugs críticos, seguridad (código + BD auditada),
+        abstracción WhatsApp, rendimiento, accesibilidad, limpieza y tests. El
+        progreso se guarda automáticamente en tu navegador.
+      </p>
+      <div class="hero-badges">
+        <span>React 19 + Vite</span>
+        <span>Supabase</span>
+        <span>BD auditada 24/07/2026</span>
+        <span id="badge-total"></span>
+      </div>
+      <div class="global-progress">
+        <div class="gp-label">
+          <span>Progreso total</span>
+          <span id="gp-text">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="gp-fill"></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="toolbar" role="toolbar" aria-label="Controles del plan">
+      <button class="btn filter-btn active" data-filter="all">Todos</button>
+      <button class="btn filter-btn" data-filter="pending">Pendientes</button>
+      <button class="btn filter-btn" data-filter="done">Completados</button>
+      <button class="btn" id="btn-expand">Expandir todo</button>
+      <button class="btn" id="btn-collapse">Colapsar todo</button>
+      <button class="btn" id="btn-export">Exportar progreso</button>
+      <button class="btn" id="btn-import">Importar</button>
+      <button class="btn" id="btn-theme">🌓 Tema</button>
+      <button class="btn danger" id="btn-reset">Reiniciar</button>
+      <input type="file" id="import-file" accept="application/json" hidden />
+    </div>
+
+    <main id="phases" aria-live="off"></main>
+    <div class="empty-state" id="empty-state">
+      No hay tareas que coincidan con el filtro seleccionado.
+    </div>
+
+    <footer>
+      Plan v2 · Generado a partir de la auditoría del código y de la base de
+      datos real ·
+      <span id="footer-date"></span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      "use strict";
+
+      /* ================= DATOS DEL PLAN ================= */
+      const PLAN = [
+        {
+          id: "0",
+          title: "Fase 0 — Fundamentos",
+          subtitle:
+            "Bloqueante para vender: sin esto el proyecto no es reproducible",
+          time: "1-2 h",
+          tasks: [
+            {
+              id: "0.1",
+              sev: "critica",
+              title: "Versionar el esquema de BD",
+              files: "supabase/migrations/",
+              problem:
+                "No existe supabase/migrations/. Las tablas, vistas, RPCs, policies RLS, triggers y buckets viven solo en la nube. Nadie puede reproducir el proyecto.",
+              fix: "supabase link --project-ref tthqbraidiykoairjeqk → supabase db pull → commit de las migraciones. Toda migración nueva se crea con supabase migration new.",
+            },
+            {
+              id: "0.2",
+              sev: "alta",
+              title: "Variables de entorno documentadas",
+              files: "frontend/.gitignore, .env.example",
+              problem:
+                "No hay .env.example y frontend/.gitignore NO ignora .env (riesgo de commitear claves). Verificado: hoy no hay secretos en git.",
+              fix: "Crear frontend/.env.example (VITE_SUPABASE_URL, VITE_ANON_KEY) y supabase/functions/.env.example (SUPABASE_URL, SERVICE_ROLE_KEY, WHATSAPP_PROVIDER, credenciales Meta/Twilio, ALLOWED_ORIGIN). Agregar .env al .gitignore.",
+            },
+            {
+              id: "0.3",
+              sev: "alta",
+              title: "config.toml consistente",
+              files: "supabase/config.toml:336",
+              problem:
+                "Declara create-user (no existe) pero no declara delete-user ni send-report.",
+              fix: "Remover create-user; agregar delete-user y send-report con verify_jwt = true.",
+            },
+          ],
+        },
+        {
+          id: "1",
+          title: "Fase 1 — Bugs Críticos",
+          subtitle:
+            "Rompen la aplicación o muestran datos falsos en producción",
+          time: "3-4 h",
+          tasks: [
+            {
+              id: "1.1",
+              sev: "critica",
+              title:
+                "Tabla y columnas inconsistentes en send-report (fix v1 incompleto)",
+              files: "supabase/functions/send-report/index.ts:34-35",
+              problem:
+                'Usa .from("patient") —la tabla real es patients— y selecciona name, lastName, numberPhone —las columnas reales son first_name, last_name, phone_number. El plan v1 solo corregía tabla y teléfono: seguiría fallando.',
+              fix: '.from("patients").select("id, first_name, last_name, phone_number") y actualizar todos los usos.',
+            },
+            {
+              id: "1.2",
+              sev: "critica",
+              title: "Bucket de almacenamiento inconsistente",
+              files: "supabase/functions/send-report/index.ts:56",
+              problem:
+                'Usa bucket "reports" pero el frontend sube a "medical-reports". Los URLs firmados fallan y los PDFs nunca se envían.',
+              fix: 'Cambiar "reports" → "medical-reports".',
+            },
+            {
+              id: "1.3",
+              sev: "critica",
+              title: "ProtectedRoute no verifica sesión",
+              files: "frontend/src/components/ProtectedRoute.jsx:7",
+              problem:
+                "if (!user) siempre es false porque user es {session: null, profile: null}, truthy incluso sin sesión. Cualquiera accede a rutas protegidas.",
+              fix: "if (!user?.session).",
+            },
+            {
+              id: "1.4",
+              sev: "critica",
+              title:
+                "Prop faltante en FormReportSend (falso error tras envío exitoso)",
+              files: "frontend/src/pages/Report.jsx:79",
+              problem:
+                '<FormReportSend /> sin prop closeModal. Tras un envío EXITOSO, closeModalFather es undefined → TypeError → el catch muestra "❌ error" aunque el WhatsApp SÍ se envió → reintentos → envíos duplicados que cuestan dinero.',
+              fix: 'Pasar closeModal={() => closeModal("reportSend")}.',
+            },
+            {
+              id: "1.5",
+              sev: "alta",
+              title:
+                "Error ignorado en deletePatient + ID equivocado en el filtro",
+              files: "frontend/src/pages/PatientsManagement.jsx:44-52",
+              problem:
+                "No verifica error antes de actualizar estado y cerrar modal. Además filtra con idPatient (estado) en vez del parámetro id.",
+              fix: "Verificar error primero; usar prev.filter(u => u.id !== id); mostrar error al usuario.",
+            },
+            {
+              id: "1.6",
+              sev: "media",
+              title: "Dependencia user en useEffect causa re-ejecuciones",
+              files: "frontend/src/Home.jsx:77",
+              problem:
+                "[user] re-ejecuta en cada cambio de referencia del objeto → queries innecesarias.",
+              fix: "[user?.session?.user?.id] o [].",
+            },
+            {
+              id: "1.7",
+              sev: "critica",
+              title:
+                "Columna deliveryId NO EXISTE en medical_reports (B2 · auditoría BD)",
+              files: "supabase/functions/send-report/index.ts:133-137",
+              problem:
+                'update({ state: "sent", deliveryId }) pero medical_reports NO tiene esa columna (verificado en BD). La función retorna 500 SIEMPRE aunque el WhatsApp se envió. Con 1.4: caos total.',
+              fix: "Rediseñar: un delivery por reporte (con report_id) o tabla pivote delivery_reports. Actualizar state sin deliveryId.",
+            },
+            {
+              id: "1.8",
+              sev: "critica",
+              title: "Tabla deliveries SIN policies RLS (B1 · auditoría BD)",
+              files: "Base de datos",
+              problem:
+                "deliveries tiene RLS habilitado pero CERO policies → el frontend nunca puede leerla. Report.jsx y contadores de Home siempre vacíos/0 en producción.",
+              fix: "Migración con policies SELECT (admin/sender/doctor); INSERT vía service role.",
+            },
+            {
+              id: "1.9",
+              sev: "critica",
+              title: "Crash de React en FormReportUpload",
+              files: "frontend/src/components/FormReportUpload.jsx:218",
+              problem:
+                '{errors.patientNotFound} renderiza el OBJETO de error → "Objects are not valid as a React child" → pantalla blanca cuando el paciente no existe.',
+              fix: "{errors.patientNotFound.message}.",
+            },
+            {
+              id: "1.10",
+              sev: "critica",
+              title: "Marketing crashea la app",
+              files: "frontend/src/pages/Marketing.jsx",
+              problem:
+                'El componente retorna undefined → React 19 lanza "Nothing was returned from render" → pantalla blanca al entrar a /app/marketing (link visible en el menú).',
+              fix: "Implementar la página o eliminar ruta + link del menú.",
+            },
+            {
+              id: "1.11",
+              sev: "alta",
+              title: "FormReportSend muestra campos inexistentes",
+              files: "frontend/src/components/FormReportSend.jsx:142",
+              problem:
+                'Muestra {patient.name} {patient.lastName} pero las columnas son first_name/last_name → el paciente se muestra como "undefined undefined".',
+              fix: "Usar patient.first_name / patient.last_name.",
+            },
+            {
+              id: "1.12",
+              sev: "alta",
+              title: "Report.jsx muestra report.title inexistente",
+              files: "frontend/src/pages/Report.jsx:62",
+              problem:
+                "Lista deliveries mostrando report.title, pero esa tabla no tiene title.",
+              fix: "select con join: id, status, created_at, patients(first_name, last_name).",
+            },
+            {
+              id: "1.13",
+              sev: "media",
+              title: "SignIn navega durante render",
+              files: "frontend/src/pages/SignIn.jsx:23-25",
+              problem:
+                'navigate("/app/home") se ejecuta en el cuerpo del componente (side-effect en render).',
+              fix: "Mover a useEffect dependiendo de user.session.",
+            },
+            {
+              id: "1.14",
+              sev: "alta",
+              title: "Crash si el perfil es null",
+              files:
+                "frontend/src/pages/PanelAdmin.jsx:11, UserManagement.jsx:71",
+              problem:
+                "user.profile.role sin optional chaining → TypeError si el fetch del perfil falló.",
+              fix: 'user?.profile?.role !== "admin".',
+            },
+            {
+              id: "1.15",
+              sev: "media",
+              title: "updateList(null) crea fila fantasma",
+              files: "frontend/src/components/FormReportUpload.jsx:70-85",
+              problem:
+                "insert sin .select() → dbData es null → updateList(null) agrega fila vacía con key undefined.",
+              fix: ".insert([data]).select().single().",
+            },
+            {
+              id: "1.16",
+              sev: "alta",
+              title: "Botón Editar sin onClick + FormEditUser roto",
+              files:
+                "frontend/src/pages/UserManagement.jsx:107, FormEditUser.jsx",
+              problem:
+                'El botón Editar no tiene onClick. FormEditUser es stub: setTimeout en render y espera prop "closemodal" pero el padre pasa "closeModal" → TypeError si se abriera.',
+              fix: "Implementar edición real (necesario para producto vendible).",
+            },
+            {
+              id: "1.17",
+              sev: "media",
+              title: "deliveryError verificado después de usarlo",
+              files: "supabase/functions/send-report/index.ts:122-141",
+              problem:
+                "Usa delivery.id en el update ANTES de verificar deliveryError.",
+              fix: "Verificar deliveryError inmediatamente tras el insert.",
+            },
+            {
+              id: "1.18",
+              sev: "media",
+              title: 'Columna "Acción" desalineada en ReportsManagement',
+              files: "frontend/src/pages/ReportsManagement.jsx:117,134",
+              problem:
+                "<th>Acción</th> incondicional pero el <td> solo se renderiza para admin → tabla desalineada para no-admins.",
+              fix: "Envolver el <th> en la misma condición de rol.",
+            },
+          ],
+        },
+        {
+          id: "2",
+          title: "Fase 2 — Seguridad",
+          subtitle:
+            "Incluye hallazgos de la auditoría de la BD real (advisors 24/07/2026)",
+          time: "4-5 h",
+          tasks: [
+            {
+              id: "2.1",
+              sev: "critica",
+              title:
+                "RPC y triggers SECURITY DEFINER ejecutables por anon (B3/B5)",
+              files: "Base de datos",
+              problem:
+                "get_user_profiles(), handle_new_user(), handle_deleted_user(), handle_new_user_by_admin() son SECURITY DEFINER ejecutables vía API por el rol anon (advisor).",
+              fix: "REVOKE EXECUTE ON FUNCTION ... FROM anon, authenticated. Los triggers no deben ser llamables por API.",
+            },
+            {
+              id: "2.2",
+              sev: "critica",
+              title:
+                "Vista medical_reports_view es SECURITY DEFINER (B4 · FUGA DE DATOS)",
+              files: "Base de datos",
+              problem:
+                "La vista bypasea RLS (advisor ERROR). Cualquier usuario autenticado (viewer, doctor) ve TODOS los informes de TODOS los pacientes incluyendo teléfonos.",
+              fix: "Recrear con security_invoker = true o policies equivalentes a medical_reports.",
+            },
+            {
+              id: "2.3",
+              sev: "alta",
+              title: "get_user_role() frágil y search_path mutable (B6)",
+              files: "Base de datos",
+              problem:
+                "SECURITY INVOKER que consulta profiles dentro de policies de profiles → riesgo de recursión infinita. search_path mutable (advisor WARN x3 funciones).",
+              fix: "Recrear como SECURITY DEFINER + SET search_path = public + STABLE.",
+            },
+            {
+              id: "2.4",
+              sev: "media",
+              title: "Policies duplicadas y mal dirigidas (B7)",
+              files: "Base de datos",
+              problem:
+                "allow_delete_medical_reports x2 idénticas; profiles con 6 policies solapadas; policies de patients usan rol {public} en vez de {authenticated}.",
+              fix: "Migración de limpieza: deduplicar, consolidar, TO public → TO authenticated.",
+            },
+            {
+              id: "2.5",
+              sev: "alta",
+              title: "Policies de storage incompletas (B8)",
+              files: "storage.objects",
+              problem:
+                "Bucket privado ✅ y solo PDF ✅, pero SIN policy SELECT → createSignedUrl falla desde el frontend (ViewPdfButton roto silenciosamente). INSERT sin WITH CHECK → cualquier autenticado puede sobrescribir archivos ajenos.",
+              fix: "Policy SELECT (mismo criterio que medical_reports) + WITH CHECK (bucket_id = 'medical-reports' AND rol IN admin/sender/doctor).",
+            },
+            {
+              id: "2.6",
+              sev: "critica",
+              title:
+                "Sin autorización por rol en Edge Functions (escalación de privilegios)",
+              files: "invite-user, delete-user, send-report",
+              problem:
+                "Ninguna función verifica el rol del llamador. Cualquier usuario autenticado (viewer, doctor) puede invitar ADMINS o borrar usuarios. La seguridad por roles existe solo en el frontend.",
+              fix: "Leer JWT del header Authorization → auth.getUser(token) → verificar profiles.role (admin para invite/delete; admin|sender para send-report).",
+            },
+            {
+              id: "2.7",
+              sev: "critica",
+              title: "invite-user actualiza la metadata del USUARIO EQUIVOCADO",
+              files: "supabase/functions/invite-user/index.ts:20-41",
+              problem:
+                "(a) nunca verifica inviteError; (b) listUsers({email}) NO filtra por email → users[0] es el primer usuario (probablemente el admin) → le sobrescribe username, nombre y ROL con los datos del invitado.",
+              fix: "Usar data.user.id del retorno de inviteUserByEmail; verificar inviteError; eliminar listUsers.",
+            },
+            {
+              id: "2.8",
+              sev: "alta",
+              title: "CORS wildcard y delete-user sin CORS",
+              files: "invite-user, send-report, delete-user",
+              problem:
+                "Access-Control-Allow-Origin: * en invite/send; delete-user no define headers CORS ni maneja OPTIONS → preflight falla.",
+              fix: "Origen desde env ALLOWED_ORIGIN; agregar manejo de OPTIONS + headers en delete-user.",
+            },
+            {
+              id: "2.9",
+              sev: "media",
+              title: 'select("*") expone datos innecesarios',
+              files: "9 ocurrencias en frontend",
+              problem:
+                "Home x3, Report, ReportsManagement, PatientsManagement, FormReportSend x2, AuthContext.",
+              fix: "Seleccionar solo columnas necesarias en cada query.",
+            },
+            {
+              id: "2.10",
+              sev: "alta",
+              title: "ID de admin hardcodeado en frontend",
+              files: "frontend/src/pages/UserManagement.jsx:41",
+              problem:
+                'idUser.includes("aa27a4f5-") es seguridad por oscuridad, visible en el bundle JS.',
+              fix: "Flag is_protected en profiles (migración) validado server-side en delete-user.",
+            },
+            {
+              id: "2.11",
+              sev: "critica",
+              title: "Sin validación de pertenencia reportIds ↔ patientId",
+              files: "supabase/functions/send-report/index.ts",
+              problem:
+                "No verifica que los reportIds pertenezcan al patientId → se pueden enviar informes de un paciente al teléfono de OTRO (fuga de datos médicos).",
+              fix: "Validar card_id de cada reporte contra el paciente antes de enviar.",
+            },
+            {
+              id: "2.12",
+              sev: "alta",
+              title: "phone_number es numeric (B9) + prefijo 58 hardcodeado",
+              files: "BD + FormAddPatient.jsx:22 + send-report:77,107",
+              problem:
+                'phone_number numeric pierde el cero inicial (parseInt lo confirma). Además se concatena "58" siempre → se duplica si ya tiene código de país.',
+              fix: 'Migración ALTER COLUMN phone_number TYPE text; input type="tel"; normalizar (quitar no-dígitos, quitar 0 inicial, anteponer 58 solo si falta).',
+            },
+            {
+              id: "2.13",
+              sev: "media",
+              title: "Errores internos expuestos al cliente",
+              files: "Las 3 Edge Functions",
+              problem:
+                "Retornan err.message crudo (puede filtrar detalles de BD/infraestructura).",
+              fix: "Log interno del error real; respuesta genérica al cliente.",
+            },
+            {
+              id: "2.14",
+              sev: "media",
+              title: "Hardening de plataforma (B10)",
+              files: "Supabase Dashboard + config.toml",
+              problem:
+                "Leaked Password Protection desactivada (advisor WARN); Postgres 17.4.1.057 con parches pendientes; password mínimo 6 sin requisitos.",
+              fix: "Activar leaked password protection; programar upgrade de Postgres; minimum_password_length = 8 y password_requirements = lower_upper_letters_digits.",
+            },
+          ],
+        },
+        {
+          id: "3",
+          title: "Fase 3 — WhatsApp con Capa de Abstracción",
+          subtitle:
+            "Meta/Twilio intercambiables vía env var — decisión reversible, más vendible",
+          time: "3-4 h",
+          tasks: [
+            {
+              id: "3.1",
+              sev: "mejora",
+              title:
+                "Crear interfaz WhatsAppProvider + providers Meta y Twilio",
+              files: "supabase/functions/send-report/providers/",
+              problem:
+                "Hoy el código llama directo a graph.facebook.com: cambiar de proveedor implica reescribir la función.",
+              fix: "whatsapp.ts (interfaz { sendTemplate, sendDocument }), meta.ts, twilio.ts. Selector: WHATSAPP_PROVIDER=meta|twilio.",
+            },
+            {
+              id: "3.2",
+              sev: "mejora",
+              title: "Variables de entorno por proveedor",
+              files: "supabase/functions/.env",
+              problem: "—",
+              fix: "WHATSAPP_PROVIDER (ambos); PHONE_NUMBER_ID + WHATSAPP_TOKEN (Meta); TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN + TWILIO_WHATSAPP_NUMBER (Twilio).",
+            },
+            {
+              id: "3.3",
+              sev: "alta",
+              title: "Filename real + documentos en paralelo",
+              files: "send-report/index.ts:104-119",
+              problem:
+                'Filename hardcodeado "Informe_Medico.pdf"; documentos enviados secuencialmente (N × tiempo por documento).',
+              fix: "Usar original_filename; Promise.all para enviar todos los documentos simultáneamente.",
+            },
+            {
+              id: "3.4",
+              sev: "alta",
+              title: "Filtrar informes ya enviados + estado por documento",
+              files: "FormReportSend.jsx + send-report",
+              problem:
+                "FormReportSend muestra TODOS los informes del paciente (incluye ya enviados) → reenvíos duplicados que cuestan dinero.",
+              fix: "Filtrar state = 'pending'; registrar estado real por documento en deliveries (éxito/fallo parcial).",
+            },
+          ],
+        },
+        {
+          id: "4",
+          title: "Fase 4 — Rendimiento",
+          subtitle: "Listas que crecen sin límite y queries redundantes",
+          time: "3-4 h",
+          tasks: [
+            {
+              id: "4.1",
+              sev: "mejora",
+              title: "Lazy loading de rutas",
+              files: "frontend/src/main.jsx",
+              problem: "Todas las páginas se cargan en el bundle inicial.",
+              fix: "React.lazy() + Suspense (especialmente rutas admin).",
+            },
+            {
+              id: "4.2",
+              sev: "mejora",
+              title: "Paginación en tablas",
+              files:
+                "PatientsManagement, ReportsManagement, Report, UserManagement",
+              problem:
+                "Cargan todos los registros; con 2500 informes/mes la tabla crece sin límite.",
+              fix: "range(inicio, fin) + controles de paginación (20-50 por página).",
+            },
+            {
+              id: "4.3",
+              sev: "mejora",
+              title: "Home: queries paralelas + conteos reales",
+              files: "frontend/src/Home.jsx",
+              problem:
+                '4 queries secuenciales; conteos con select("*") → con max_rows = 1000 los contadores se CONGELAN en 1000.',
+              fix: 'Promise.all + select("*", { count: "exact", head: true }) para contadores.',
+            },
+            {
+              id: "4.4",
+              sev: "mejora",
+              title: "Memoización de filas",
+              files: "Tablas de gestión",
+              problem: "Re-render de listas grandes al abrir/cerrar modales.",
+              fix: "React.memo en filas de tablas.",
+            },
+          ],
+        },
+        {
+          id: "5",
+          title: "Fase 5 — Accesibilidad",
+          subtitle: "Modales, formularios, teclado y lectores de pantalla",
+          time: "3-4 h",
+          tasks: [
+            {
+              id: "5.1",
+              sev: "mejora",
+              title: "Modales accesibles",
+              files: "frontend/src/components/Modal.jsx",
+              problem:
+                "Sin role=dialog, aria-modal, trampa de foco ni cierre con Escape.",
+              fix: 'role="dialog" + aria-modal="true"; focus trap (Tab/Shift+Tab); cerrar con Escape; enfocar primer elemento al abrir; devolver foco al abrir/cerrar.',
+            },
+            {
+              id: "5.2",
+              sev: "mejora",
+              title: "Botón cerrar modal con label",
+              files: "frontend/src/components/Modal.jsx",
+              problem: "Solo emoji ❌ sin texto ni label.",
+              fix: 'aria-label="Cerrar".',
+            },
+            {
+              id: "5.3",
+              sev: "mejora",
+              title: "Tablas responsivas",
+              files: "Management.css, Page.css",
+              problem: "Tablas con muchas columnas se desbordan en móvil.",
+              fix: "Contenedor con overflow-x: auto o layout de tarjetas en móvil.",
+            },
+            {
+              id: "5.4",
+              sev: "mejora",
+              title: "Labels asociados a inputs",
+              files:
+                "FormAddUser, FormAddPatient, FormReportUpload, FormReportSend, SignIn",
+              problem: "Labels envuelven inputs pero sin htmlFor/id.",
+              fix: "id en inputs + htmlFor en labels.",
+            },
+            {
+              id: "5.5",
+              sev: "mejora",
+              title: "Live regions para feedback",
+              files: "Formularios y modales",
+              problem:
+                "Mensajes de éxito/error no son anunciados por lectores de pantalla.",
+              fix: 'aria-live="polite" en contenedores de mensajes dinámicos.',
+            },
+            {
+              id: "5.6",
+              sev: "mejora",
+              title: "Alt text (corrección al plan v1)",
+              files: "Menu.jsx, PanelAdmin.jsx",
+              problem:
+                'El alt="" de UserManagement.jsx:80 es CORRECTO (decorativa junto a un h1). Los que sobran son los alt="Icono de..." redundantes del menú (el texto visible ya describe el destino).',
+              fix: 'alt="" en imágenes decorativas del menú y tarjetas del panel.',
+            },
+            {
+              id: "5.7",
+              sev: "mejora",
+              title: "Skip navigation link",
+              files: "App.jsx",
+              problem:
+                "Usuarios de teclado deben tabear todo el menú para llegar al contenido.",
+              fix: 'Link "Saltar al contenido" visible al recibir foco.',
+            },
+          ],
+        },
+        {
+          id: "6",
+          title: "Fase 6 — Limpieza de Código",
+          subtitle: "Logs, dependencias, stubs y errores silenciosos",
+          time: "1-2 h",
+          tasks: [
+            {
+              id: "6.1",
+              sev: "media",
+              title: "Console logs en producción (42 verificadas)",
+              files: "Todo el frontend",
+              problem:
+                "42 console.log/error, incluye datos sensibles: console.log(patientData), console.log(medicalReportData).",
+              fix: "Eliminar logs de debug; mantener console.error solo para errores reales.",
+            },
+            {
+              id: "6.2",
+              sev: "media",
+              title: "Dependencia axios sin usar",
+              files: "frontend/package.json",
+              problem: "axios listado pero nunca importado.",
+              fix: "yarn remove axios.",
+            },
+            {
+              id: "6.3",
+              sev: "alta",
+              title: "Error Boundaries",
+              files: "frontend/src/components/ErrorBoundary.jsx (nuevo)",
+              problem:
+                "Si un componente lanza error, toda la app se cae (pantalla blanca, como 1.9/1.10/1.14).",
+              fix: "Crear ErrorBoundary.jsx envolviendo las rutas.",
+            },
+            {
+              id: "6.4",
+              sev: "media",
+              title: "Feedback de errores al usuario en deletes",
+              files: "UserManagement, ReportsManagement, PatientsManagement",
+              problem:
+                "Si el delete falla, el error solo va a consola: usuario sin feedback (modal abierto, silencio).",
+              fix: "Estado error visible dentro del modal.",
+            },
+            {
+              id: "6.5",
+              sev: "media",
+              title: "Stubs y código muerto",
+              files: "FormEditUser, Marketing, invite-user:3, delete-user:3",
+              problem:
+                "FormEditUser stub; Marketing vacío; svc exportado innecesariamente en invite-user y delete-user.",
+              fix: "Implementar o eliminar stubs; quitar export de svc.",
+            },
+            {
+              id: "6.6",
+              sev: "media",
+              title: "Typo en className",
+              files: "frontend/src/pages/ReportsManagement.jsx:120",
+              problem: "tbody-mangement → el CSS no aplica.",
+              fix: "tbody-management.",
+            },
+            {
+              id: "6.7",
+              sev: "media",
+              title: "Coma operador en UserManagement",
+              files: "frontend/src/pages/UserManagement.jsx:111",
+              problem:
+                '{ setIdUser(user.id), openModal("deleteUser"); } funciona por coma operador, frágil y confuso.',
+              fix: "Separar las sentencias con ;",
+            },
+            {
+              id: "6.8",
+              sev: "media",
+              title: "Validación de env vars en supabaseClient",
+              files: "frontend/src/supabaseClient.js",
+              problem:
+                "Si VITE_SUPABASE_URL o VITE_ANON_KEY faltan, createClient falla con error críptico.",
+              fix: "Lanzar error claro al inicio si falta alguna variable.",
+            },
+          ],
+        },
+        {
+          id: "7",
+          title: "Fase 7 — Tests Mínimos Críticos",
+          subtitle: "Vitest + React Testing Library + jsdom",
+          time: "2-3 h",
+          tasks: [
+            {
+              id: "7.1",
+              sev: "mejora",
+              title: "Setup de testing",
+              files: "frontend/package.json, vitest.config",
+              problem: "Cero tests en todo el proyecto.",
+              fix: 'Instalar vitest, @testing-library/react, @testing-library/jest-dom, jsdom; script "test"; mock de supabaseClient.',
+            },
+            {
+              id: "7.2",
+              sev: "mejora",
+              title: "Tests de ProtectedRoute (bug 1.3)",
+              files: "ProtectedRoute.test.jsx",
+              problem: "—",
+              fix: "Redirige a / sin sesión; renderiza children con sesión activa.",
+            },
+            {
+              id: "7.3",
+              sev: "mejora",
+              title: "Tests de SignIn (bug 1.13 + auth)",
+              files: "SignIn.test.jsx",
+              problem: "—",
+              fix: "Login exitoso navega a /app/home; credenciales inválidas muestran error.",
+            },
+            {
+              id: "7.4",
+              sev: "mejora",
+              title: "Tests de Modal (a11y 5.1)",
+              files: "Modal.test.jsx",
+              problem: "—",
+              fix: "Cierra con Escape y click en overlay; role=dialog presente.",
+            },
+            {
+              id: "7.5",
+              sev: "mejora",
+              title: "Tests de FormAddPatient y FormReportSend (bug 1.11)",
+              files: "Forms.test.jsx",
+              problem: "—",
+              fix: "Valida cédula/teléfono; FormReportSend muestra nombre del paciente encontrado.",
+            },
+            {
+              id: "7.6",
+              sev: "mejora",
+              title: "Test de ErrorBoundary (6.3)",
+              files: "ErrorBoundary.test.jsx",
+              problem: "—",
+              fix: "Captura errores de render y muestra fallback.",
+            },
+          ],
+        },
+      ];
+
+      const SEV_LABEL = {
+        critica: "Crítica",
+        alta: "Alta",
+        media: "Media",
+        mejora: "Mejora",
+      };
+      const STORAGE_KEY = "cdd-plan-v2-progress";
+      const THEME_KEY = "cdd-plan-v2-theme";
+      const FILTER_KEY = "cdd-plan-v2-filter";
+
+      /* ================= ESTADO ================= */
+      let progress = loadProgress();
+      let currentFilter = localStorage.getItem(FILTER_KEY) || "all";
+
+      function loadProgress() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch {
+          return {};
+        }
+      }
+      function saveProgress() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+
+      /* ================= RENDER ================= */
+      const phasesEl = document.getElementById("phases");
+      const emptyState = document.getElementById("empty-state");
+
+      function render() {
+        phasesEl.innerHTML = "";
+        let visibleTasks = 0;
+
+        for (const phase of PLAN) {
+          const total = phase.tasks.length;
+          const done = phase.tasks.filter((t) => progress[t.id]).length;
+
+          const section = document.createElement("section");
+          section.className = "phase" + (done === total ? " done" : "");
+          section.dataset.phase = phase.id;
+
+          const filteredTasks = phase.tasks.filter((t) => {
+            if (currentFilter === "done") return !!progress[t.id];
+            if (currentFilter === "pending") return !progress[t.id];
+            return true;
+          });
+          visibleTasks += filteredTasks.length;
+
+          section.innerHTML = `
+      <div class="phase-header" role="button" tabindex="0" aria-expanded="true">
+        <span class="phase-toggle" aria-hidden="true">▼</span>
+        <div class="phase-title">
+          <h2>${phase.title}</h2>
+          <p>${phase.subtitle} · Est. ${phase.time}</p>
+        </div>
+        <div class="phase-bar" aria-hidden="true">
+          <div class="progress-fill" style="width:${total ? (done / total) * 100 : 0}%"></div>
+        </div>
+        <span class="phase-count">${done}/${total}</span>
+      </div>
+      <div class="phase-body"></div>
+    `;
+
+          const body = section.querySelector(".phase-body");
+
+          for (const task of filteredTasks) {
+            body.appendChild(renderTask(task));
+          }
+
+          if (filteredTasks.length === 0) {
+            body.innerHTML = `<p style="padding:.8rem;color:var(--text2);font-size:.85rem;">Sin tareas en este filtro.</p>`;
+          }
+
+          phasesEl.appendChild(section);
+        }
+
+        emptyState.style.display = visibleTasks === 0 ? "block" : "none";
+        updateGlobalProgress();
+      }
+
+      function renderTask(task) {
+        const el = document.createElement("article");
+        const isDone = !!progress[task.id];
+        el.className = "task" + (isDone ? " done" : "");
+        el.dataset.task = task.id;
+
+        el.innerHTML = `
+    <div class="task-head">
+      <input type="checkbox" class="task-check" id="chk-${task.id}" ${isDone ? "checked" : ""}
+        aria-label="Marcar tarea ${task.id} como completada">
+      <div class="task-info">
+        <p class="task-title"><label for="chk-${task.id}">${task.id} · ${task.title}</label></p>
+        <div class="task-meta">
+          <span class="badge sev-${task.sev}">${SEV_LABEL[task.sev]}</span>
+          <span class="badge file">${task.files}</span>
+        </div>
+      </div>
+    </div>
+    <div class="task-detail">
+      ${task.problem !== "—" ? `<div class="detail-row"><span class="detail-label">Problema</span>${task.problem}</div>` : ""}
+      <div class="detail-row"><span class="detail-label">Fix</span>${task.fix}</div>
+    </div>
+  `;
+
+        const checkbox = el.querySelector(".task-check");
+        checkbox.addEventListener("change", () => {
+          if (checkbox.checked) progress[task.id] = true;
+          else delete progress[task.id];
+          saveProgress();
+          el.classList.toggle("done", checkbox.checked);
+          updateGlobalProgress();
+          updatePhaseBar(el.closest(".phase"));
+        });
+
+        // Click en la cabecera (fuera del checkbox) expande/colapsa el detalle
+        el.querySelector(".task-head").addEventListener("click", (e) => {
+          if (e.target.closest(".task-check") || e.target.closest("label"))
+            return;
+          el.classList.toggle("open");
+        });
+
+        return el;
+      }
+
+      /* ================= PROGRESO ================= */
+      function allTasks() {
+        return PLAN.flatMap((p) => p.tasks);
+      }
+
+      function updateGlobalProgress() {
+        const total = allTasks().length;
+        const done = allTasks().filter((t) => progress[t.id]).length;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        document.getElementById("gp-fill").style.width = pct + "%";
+        document.getElementById("gp-text").textContent =
+          `${pct}% (${done}/${total})`;
+        document.getElementById("badge-total").textContent =
+          `${total} tareas en ${PLAN.length} fases`;
+        document.title =
+          pct === 100
+            ? "✅ Plan completado - CDD Chatbot"
+            : `(${pct}%) CDD Chatbot - Plan de Mejora v2`;
+      }
+
+      function updatePhaseBar(section) {
+        if (!section) return;
+        const phase = PLAN.find((p) => p.id === section.dataset.phase);
+        const total = phase.tasks.length;
+        const done = phase.tasks.filter((t) => progress[t.id]).length;
+        section.querySelector(".phase-count").textContent = `${done}/${total}`;
+        section.querySelector(".phase-bar .progress-fill").style.width =
+          `${(done / total) * 100}%`;
+        section.classList.toggle("done", done === total);
+      }
+
+      /* ================= CONTROLES ================= */
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".filter-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentFilter = btn.dataset.filter;
+          localStorage.setItem(FILTER_KEY, currentFilter);
+          render();
+        });
+      });
+
+      // Restaurar filtro guardado
+      if (currentFilter !== "all") {
+        document.querySelectorAll(".filter-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.filter === currentFilter);
+        });
+      }
+
+      document.getElementById("btn-expand").addEventListener("click", () => {
+        document
+          .querySelectorAll(".task")
+          .forEach((t) => t.classList.add("open"));
+        document
+          .querySelectorAll(".phase")
+          .forEach((p) => p.classList.remove("collapsed"));
+      });
+      document.getElementById("btn-collapse").addEventListener("click", () => {
+        document
+          .querySelectorAll(".task")
+          .forEach((t) => t.classList.remove("open"));
+        document
+          .querySelectorAll(".phase")
+          .forEach((p) => p.classList.add("collapsed"));
+      });
+
+      document.getElementById("btn-reset").addEventListener("click", () => {
+        if (!confirm("¿Reiniciar todo el progreso del plan?")) return;
+        progress = {};
+        saveProgress();
+        render();
+        toast("Progreso reiniciado");
+      });
+
+      document.getElementById("btn-export").addEventListener("click", () => {
+        const payload = {
+          app: "cdd-chatbot-plan-v2",
+          exportedAt: new Date().toISOString(),
+          progress,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "cdd-plan-progreso.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast("Progreso exportado");
+      });
+
+      document.getElementById("btn-import").addEventListener("click", () => {
+        document.getElementById("import-file").click();
+      });
+      document.getElementById("import-file").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const data = JSON.parse(reader.result);
+            const incoming = data.progress ?? data;
+            const validIds = new Set(allTasks().map((t) => t.id));
+            progress = {};
+            for (const [k, v] of Object.entries(incoming)) {
+              if (validIds.has(k) && v) progress[k] = true;
+            }
+            saveProgress();
+            render();
+            toast("Progreso importado ✔");
+          } catch {
+            toast("Archivo inválido");
+          }
+          e.target.value = "";
+        };
+        reader.readAsText(file);
+      });
+
+      /* ================= TEMA ================= */
+      function applyTheme(theme) {
+        document.documentElement.classList.toggle("light", theme === "light");
+        localStorage.setItem(THEME_KEY, theme);
+      }
+      document.getElementById("btn-theme").addEventListener("click", () => {
+        const isLight = document.documentElement.classList.contains("light");
+        applyTheme(isLight ? "dark" : "light");
+      });
+      applyTheme(
+        localStorage.getItem(THEME_KEY) ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark"),
+      );
+
+      /* ================= COLAPSAR FASES ================= */
+      phasesEl.addEventListener("click", (e) => {
+        const header = e.target.closest(".phase-header");
+        if (!header) return;
+        header.parentElement.classList.toggle("collapsed");
+      });
+      phasesEl.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const header = e.target.closest(".phase-header");
+        if (!header) return;
+        e.preventDefault();
+        header.parentElement.classList.toggle("collapsed");
+      });
+
+      /* ================= TOAST ================= */
+      let toastTimer;
+      function toast(msg) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+      }
+
+      document.getElementById("footer-date").textContent =
+        "Progreso guardado localmente en tu navegador (localStorage)";
+
+      render();
+    </script>
+  </body>
+</html>
